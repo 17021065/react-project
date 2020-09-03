@@ -1,18 +1,8 @@
 import React from 'react';
 
-const InputWithID = ({id , type='text', value, onSearch, isFocused, children}) => {
-    const inputRef = React.useRef();
-  
-    React.useEffect(() => {
-      if(isFocused){
-        inputRef.current.focus();
-      }
-    }, [isFocused]);
-  
+const InputWithID = ({id , type='text', className, onSearch, placeHolder}) => {
     return <>
-      <label htmlFor={id}>{children}</label>
-      &nbsp;&nbsp;
-        <input ref={inputRef} id={id} type={type} value={value} onChange={onSearch} /*autoFocus={isFocused}*/></input>
+        <input id={id} className={className} type={type} placeholder={placeHolder} onChange={onSearch}></input>
     </>
   }
 

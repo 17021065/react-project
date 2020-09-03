@@ -1,14 +1,13 @@
 import React from 'react';
 import InputWithID from './InputWithID.js'
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const SearchForm = ({id, value, onSearch, onSubmit}) => (
+const SearchForm = ({id, className, value, onSearch, onSubmit, placeHolder, buttonVariant}) => (
     <>
-        <form onSubmit={onSubmit}>
-        <InputWithID id={id} value={value} onSearch={onSearch} isFocused>
-            <strong>Search:</strong>
-        </InputWithID>
+        <form onSubmit={onSubmit} inline>
+        <InputWithID id={id} className={className} onSearch={onSearch} placeHolder={placeHolder}></InputWithID>
         &nbsp;&nbsp;
-        <button type='submit' disabled={!value}>Submit</button>
+        <button type='submit' variant={buttonVariant} disabled={!value}>Submit</button>
         </form>
     </>
 )

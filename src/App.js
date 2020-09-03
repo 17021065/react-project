@@ -1,7 +1,11 @@
 import React from 'react';
 import './App.css';
-import SearchForm from './SearchForm.js';
 import List from './List.js'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import CKEditor from '@ckeditor/ckeditor5-react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Navbar,Nav,NavDropdown,Form,FormControl,Button,Spinner } from 'react-bootstrap';
+import search from './search-24px.svg';
 
 // Start state controller define
 const useSemiPersistentState = function(key, initialState){
@@ -51,14 +55,14 @@ const API_ENDPOINT = 'https://hn.algolia.com/api/v1/search?query=';
 function App() {
 
 // Start declare state
-const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'react');
+  const [searchTerm, setSearchTerm] = useSemiPersistentState('search', 'react');
 
-const [hackerList, dispatchHackerList] = React.useReducer(
-  hackerListReducer,
-  {data: [], isLoading: false, isError: false} 
-);
+  const [hackerList, dispatchHackerList] = React.useReducer(
+    hackerListReducer,
+    {data: [], isLoading: false, isError: false} 
+  );
 
-const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
+  const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
 // End declare state 
 
 // Start manage list state
@@ -90,34 +94,43 @@ const [url, setUrl] = React.useState(`${API_ENDPOINT}${searchTerm}`);
   }  
 // End manage search bar state
 
-/* 
-// Start manage search bar checker state
-  const [checkTerm, setCheckTerm] = useSemiPersistentState('checker', 'focus')
-
-  const handleCheck = function(event){
-    setCheckTerm(event.target.value);
-    console.log(checkTerm);
-  }
-// End manage search bar checker state
-*/
-
   return (
     <div className="App">
-
-      <h1>Hacker Stories</h1>
-
-      <SearchForm id={'search'} value={searchTerm} onSearch={handleSearchInput} onSubmit={handleSearchSubmit} />
+      <Navbar bg="light" expand="lg">
+        <Navbar.Brand href="#home">Wiki App</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="mr-auto">
+            <Nav.Link href="#home">Home</Nav.Link>
+            <Nav.Link href="#link">Link</Nav.Link>
+            <NavDropdown title="Dropdown" id="basic-nav-dropdown">
+              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+            </NavDropdown>
+          </Nav>
+          <Form inline onSubmit={handleSearchSubmit}>
+            <FormControl type="text" placeholder="Search" className="mr-sm-2" onChange={handleSearchInput}/>
+            <Button type="submit" variant="outline-success" disabled={!searchTerm}>
+              <img src={search} alt='searchIcon'></img>
+            </Button>
+          </Form>
+        </Navbar.Collapse>
+      </Navbar>
       <br></br>
-      <p>Searching for <strong>{searchTerm}</strong></p> 
+      <p>Searching for <strong>{searchTerm}</strong></p>
 
-      {/*<InputWithID id={'checker'} value={checkTerm} onSearch={handleCheck}>
-        <strong>Checker:</strong>
-      </InputWithID>*/}
+      <CKEditor 
+        editor={ClassicEditor}
+        onInit={ editor => {}}
+      />
       
       <br></br>
       {hackerList.isError && <p>Something went wrong ...</p>}
 
-      {hackerList.isLoading ? (<p>Loading...</p>) : (<List content={hackerList.data} onRemoveItem={handleRemoveItem}/>) }
+      {hackerList.isLoading ? (<Spinner animation="border"/>) : (<List content={hackerList.data} onRemoveItem={handleRemoveItem}/>)}
     </div>
   );
 }
