@@ -55,6 +55,7 @@ const WriteUI = () => {
     } 
 
     const handleArticleSave =  React.useCallback(() => {
+        
         console.log(subject);
         console.log(content);
         console.log(date);
@@ -67,7 +68,7 @@ const WriteUI = () => {
     return (
     <>  
         <div className='container-fluid py-4 bg-secondary'>
-            <div className='container py-3 bg-light '>
+            <div className='shadow container py-3 bg-light '>
                 <h1>Write new article</h1>
                 <form className='was-validated'>
                     <div className="form-group" onSubmit={handleArticleSubmit}>
@@ -94,7 +95,7 @@ const WriteUI = () => {
                 </div>    
             )}
         </div>
-        <div className='container'>
+        <div className='container-fluid'>
             <h1>Footer</h1>
         </div>     
     </>
