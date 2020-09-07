@@ -3,7 +3,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Spinner } from 'react-bootstrap';
-import useSemiPersistentState from './StateController'
+import useSemiPersistentState from '../Controller/State'
 
 const databaseReducer = (state, action) => {
     switch(action.type){

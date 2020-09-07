@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar,Nav,Container,Jumbotron } from 'react-bootstrap';
-import { BrowserRouter as Router, Route, Link, NavLink } from "react-router-dom";
-import WriteUI from './Write';
-import SearchUI from './Search';
-import Banner from './Home';
-import article from './article-24px.svg';
+import { Navbar,Nav} from 'react-bootstrap';
+import { BrowserRouter as Router, Route} from "react-router-dom";
+import WriteUI from './Write/Write';
+import SearchUI from './Search/Search';
+import Banner from './Home/Home';
+import article from './img/article-24px.svg';
 
 function App() {
   return (
@@ -20,7 +20,6 @@ function App() {
           <Nav className="mr-auto">
             <Nav.Link href="/search">Search</Nav.Link>
             <Nav.Link href="/write">Write</Nav.Link>
-            <Nav.Link href="/history">History</Nav.Link>
           </Nav>
           <Navbar.Text>
             Signed in as: <a href="#login">Admin</a>
