@@ -1,10 +1,11 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Form,FormControl,Button,Spinner, Pagination,Container } from 'react-bootstrap';
+import { Form,FormControl,Button,Spinner, Pagination, } from 'react-bootstrap';
 import { BrowserRouter as Router, Route, Link} from "react-router-dom";
 import search from '../img/search-24px.svg';
 import useSemiPersistentState from '../Controller/State'
 import List from './List';
+import Footer from '../Home/Footer'
 
 const database = [
   {
@@ -36,6 +37,36 @@ const database = [
     articleID: 6,
     subject: 'Size',
     content: 'small, medium, large'
+  },
+  {
+    articleID: 7,
+    subject: 'Dog',
+    content: 'Pitbull, Corgi, Becgie'
+  },
+  {
+    articleID: 8,
+    subject: 'Music',
+    content: 'rock, pop, ballad'
+  },
+  {
+    articleID: 9,
+    subject: 'Celebrity',
+    content: 'singer, actor, actress'
+  },
+  {
+    articleID: 10,
+    subject: 'Language',
+    content: 'English-UK, France, English-US, Chinese, Japanese, Vietnamese, Korean'
+  },
+  {
+    articleID: 11,
+    subject: 'Large Cat',
+    content: 'Jaguar, Leopard, Black Panther, White Panther, Cougar'
+  },
+  {
+    articleID: 12,
+    subject: 'Mammal',
+    content: 'Human, Elephant, Bat, Whale'
   },
 ];
 
@@ -101,7 +132,9 @@ const articleListReducer = (state, action) => {
 const SearchUI = () => {
 
 // Start declare state
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = React.useState(undefined);
+
+  const [active, setActive] = useSemiPersistentState('page', 1);
 
 /*   const [articleList, dispatchArticleList] = React.useReducer(
     articleListReducer,
@@ -151,28 +184,26 @@ const SearchUI = () => {
       result.push(_result.slice(n, n+5));
     }
   }
-  for(let n=0; n<result.length; n++){
-    console.log(result[n].length)
-  }
 // End manage search bar state
-  const [active, setActive] = React.useState(1);
 
-  const handlePagination = (number) =>{
-    setActive(number); 
+// Start manage list state
+  const handlePagination = (event) =>{
+    setActive(event.target.innerHTML*1);
   }
 
   let items = [];
   for (let number = 1; number <= result.length; number++) {
     items.push(
-      <Pagination.Item key={number} active={number === active} href={`/search/page${number}`}>
+      <Pagination.Item key={number} active={number === active} onClick={handlePagination}>
         {number}
       </Pagination.Item>,
     );
   }
+// End manage list state
 
   return <>
     <div className='container-fluid bg-secondary py-4'>
-      <div className='shadow container py-4 bg-light'>
+      <div className='shadow-lg container py-4 bg-light'>
         <div className='mx-auto' style={{width: 400}}>
           <Form inline onSubmit={handleSearchSubmit}>
             <FormControl type="text" placeholder="Search" className="mr-sm-2 mx-4 w-75" onChange={handleSearchInput}/>
@@ -181,8 +212,7 @@ const SearchUI = () => {
               </Button>
           </Form>  
         </div>
-        <div className='mx-auto w-75 my-4'style={{height: 850}}>
-          <p className='py-3'>Results for <strong>{searchTerm}</strong></p>
+        <div className='mx-auto w-75 my-4'>
 {/* 
           {articleList.isError && <p>Something went wrong ...</p>}
 
@@ -200,19 +230,23 @@ const SearchUI = () => {
               </div>
             </div>
           )} */}
-
-          {/* <List content={result}/> */}
-          
-        </div>
-        <div className='mx-auto w-75'>
-          <Pagination>{items}</Pagination>
+          {subject==='' ? (
+            <p className='text-black-50' style={{height: 500, fontSize: 30, paddingTop: 200}}>
+              Type a subject into search bar to find related articles
+            </p>
+          ) : (
+            <div>
+              <List content={result[active-1]} subject={subject} amount={_result.length}/>
+              <div className='mx-auto mt-4'>
+                <Pagination>{items}</Pagination>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </div>
-    
-    <div className='container-fluid'>
-          <h1>Footer</h1>
-    </div>     
+
+    <Footer/>
   </>
 }
 

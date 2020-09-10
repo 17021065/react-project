@@ -14,7 +14,7 @@ function App() {
     <div className="App">
 
     <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/"><img src={article} alt='libraryIcon'></img>Library</Navbar.Brand>
+        <Navbar.Brand href="/"><img src={article} alt='Library Icon'></img>Library</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">

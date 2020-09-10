@@ -4,6 +4,7 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Spinner } from 'react-bootstrap';
 import useSemiPersistentState from '../Controller/State'
+import Footer from '../Home/Footer';
 
 const databaseReducer = (state, action) => {
     switch(action.type){
@@ -65,10 +66,9 @@ const WriteUI = () => {
         handleArticleSave();
     }, [handleArticleSave]);
 
-    return (
-    <>  
+    return <>  
         <div className='container-fluid py-4 bg-secondary'>
-            <div className='shadow container py-3 bg-light '>
+            <div className='shadow-lg container py-3 bg-light '>
                 <h1>Write new article</h1>
                 <form className='was-validated'>
                     <div className="form-group" onSubmit={handleArticleSubmit}>
@@ -95,11 +95,8 @@ const WriteUI = () => {
                 </div>    
             )}
         </div>
-        <div className='container-fluid'>
-            <h1>Footer</h1>
-        </div>     
+        <Footer/>    
     </>
-    )
 }
 
 export default WriteUI;
