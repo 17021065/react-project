@@ -26,7 +26,7 @@ const Item = function ({item}){
               <div className="card-body">
               <h4 className="card-title text-left">{item.subject}</h4>
                 <p className="card-text text-left">{item.content}</p>
-                <a href="#" className="card-link float-left">See more</a>
+                <a href={`/article/${item.articleID}`} className="card-link float-left">See more</a>
               </div>
             </div>
           </div>

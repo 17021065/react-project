@@ -3,8 +3,9 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Spinner } from 'react-bootstrap';
-import useSemiPersistentState from '../Controller/State'
-import Footer from '../Home/Footer';
+import useSemiPersistentState from '../controller/State'
+import Footer from '../pattern/Footer';
+import PagePattern from '../pattern/PagePattern';
 
 const databaseReducer = (state, action) => {
     switch(action.type){
@@ -67,34 +68,20 @@ const WriteUI = () => {
     }, [handleArticleSave]);
 
     return <>  
-        <div className='container-fluid py-4 bg-secondary'>
-            <div className='shadow-lg container py-3 bg-light '>
-                <h1>Write new article</h1>
-                <form className='was-validated'>
-                    <div className="form-group" onSubmit={handleArticleSubmit}>
-                        <input type="text" className="form-control" placeholder="Subject" onChange={handleSubjectChange} required></input>
-                        <div className='invalid-feedback'>Please fill out this field.</div>
-                    </div>
-                    <div className="form-group">
-                        <CKEditor editor={ClassicEditor} onChange={handleContentChange}/>
-                    </div>
-                    <button type="submit" className="btn btn-primary">Submit</button>
-                </form>
-            </div>  
-        </div>
-        <div className='container'>
-            {database.isError && <p>Something went wrong...</p>}
+        <PagePattern>
+            <h1>Write new article</h1>
+            <form className='was-validated'>
+                <div className="form-group" onSubmit={handleArticleSubmit}>
+                    <input type="text" className="form-control" placeholder="Subject" onChange={handleSubjectChange} required></input>
+                    <div className='invalid-feedback'>Please fill out this field.</div>
+                </div>
+                <div className="form-group">
+                    <CKEditor editor={ClassicEditor} onChange={handleContentChange}/>
+                </div>
+                <button type="submit" className="btn btn-primary">Submit</button>
+            </form>    
+        </PagePattern>
 
-            {database.isLoading ? (
-                <Spinner animation="border" />
-            ) : (
-                <div>
-                <span>{database.subject}</span>
-                <span>{database.content}</span>
-                <span>{database.date}</span>
-                </div>    
-            )}
-        </div>
         <Footer/>    
     </>
 }
