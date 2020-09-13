@@ -2,7 +2,6 @@ import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form,FormControl,Button,Spinner, Pagination, } from 'react-bootstrap';
 import search from '../img/search-24px.svg';
-import useSemiPersistentState from '../controller/State';
 import List from './List';
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
@@ -24,14 +23,14 @@ const solveData = (database, subject) => {
   return [raw, processed];
 }
 
-const SearchUI = () => {
-
+const SearchUI = ({match}) => {
+  
 // Start declare state
-  const [searchTerm, setSearchTerm] = React.useState(undefined);
+  const [searchTerm, setSearchTerm] = React.useState(match.params.subject);
 
-  const [active, setActive] = useSemiPersistentState('page', 1);
+  const [active, setActive] = React.useState(1);
 
-  const [subject, setSubject] = React.useState('');
+  const [subject, setSubject] = React.useState(match.params.subject);
 // End declare state 
 
 // Start manage search bar state 
@@ -65,7 +64,7 @@ const SearchUI = () => {
     <PagePattern>
       <div className='mx-auto' style={{width: 400}}>
         <Form inline onSubmit={handleSearchSubmit}>
-          <FormControl type="text" placeholder="Search" className="mr-sm-2 mx-4 w-75" onChange={handleSearchInput}/>
+          <FormControl type="text" value={searchTerm} placeholder="Search" className="mr-sm-2 mx-4 w-75" onChange={handleSearchInput}/>
           <Button type="submit" variant="outline-secondary" disabled={!searchTerm}>
             <img src={search} alt='searchIcon'></img>
           </Button>
