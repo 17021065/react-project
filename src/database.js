@@ -1,4 +1,4 @@
-const database = [
+var database = [
     {
       articleID: 1,
       subject: 'number',

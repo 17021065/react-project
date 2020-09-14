@@ -2,10 +2,12 @@ import React from 'react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Tabs, Tab } from 'react-bootstrap';
+import { Tabs, Tab, Modal, Button } from 'react-bootstrap';
 import useSemiPersistentState from '../controller/State'
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
+import { Redirect } from 'react-router-dom';
+import $ from 'jquery';
 
 const databaseReducer = (state, action) => {
     switch(action.type){
@@ -35,16 +37,32 @@ const databaseReducer = (state, action) => {
 }
 
 const WriteUI = () => {
-
+// Start declare state
   const [date, setDate] = React.useState(new Date());
 
-  const [subject, setSubject] = useSemiPersistentState('subject', '');
+  const [articleSubject, setArticleSubject] = useSemiPersistentState('subject', '');
 
-  const [content, setContent] = useSemiPersistentState('content', '');
-     
-  const handleSubjectChange = (event) => setSubject(event.target.value);
+  const [articleContent, setArticleContent] = useSemiPersistentState('content', '');
 
-  const handleContentChange = (event, editor) => setContent(editor.getData());
+  const [cancelState, setCancelState] = React.useState(false);
+
+  const [showCancelPrompt, setShowCancelPrompt] = React.useState(false);
+// End declare state
+
+// Start handle state
+  const handleSubjectChange = (event) => setArticleSubject(event.target.value);
+
+  const handleContentChange = (event, editor) => setArticleContent(editor.getData());
+  
+  const handleCloseCancelPrompt = () => setShowCancelPrompt(false);
+
+  const handleShowCancelPrompt = () => setShowCancelPrompt(true);
+
+  const handleCancelWriting = (event) => {
+    setCancelState(true);
+    setArticleSubject('');
+    setArticleContent('');
+  }
 
   const handleArticleSubmit = (event) => {
     setDate(new Date());
@@ -52,9 +70,9 @@ const WriteUI = () => {
   } 
 
   const handleArticleSave =  React.useCallback(() => {
-        
-    console.log(subject);
-    console.log(content);
+    
+    console.log(articleSubject);
+    console.log(articleContent);
     console.log(date);
   }, [date]);
     
@@ -62,36 +80,64 @@ const WriteUI = () => {
     handleArticleSave();
   }, [handleArticleSave]);
 
-  return <>  
+  React.useEffect(() => {
+    $('#subject').html(articleSubject);
+    $('#content').html(articleContent);
+  }, [articleContent, articleSubject]);
+
+  window.addEventListener('beforeunload', (e) =>{
+    window.confirm('Leave ?');
+  });
+// End handle state
+
+  return <>
     <PagePattern>
       <Tabs defaultActiveKey="writing" transition={false} id="noanim-tab-example">
         <Tab eventKey="writing" title="Writing Page" className='mx-3 mt-2'>
           <h1>Write new article</h1>
             <form className='was-validated' onSubmit={handleArticleSubmit}>
               <div className="form-group">
-                <input type="text" className="form-control" placeholder="Subject" onChange={handleSubjectChange} required></input>
+                <input type="text" className="form-control" placeholder="Subject" value={articleSubject} onChange={handleSubjectChange} required></input>
                 <div className='invalid-feedback'>Please fill out this field.</div>
               </div>
               <div className="form-group">
-                <CKEditor editor={ClassicEditor} onChange={handleContentChange}/>
+                <CKEditor 
+                  editor={ClassicEditor}
+                  data={articleContent} 
+                  onChange={handleContentChange}
+                />
               </div>
               <div className='form-group'>
                 <button type="submit" className="btn btn-success mx-sm-2" style={{width:80}}>Submit</button>
-                <button type='button' className="btn btn-danger mx-sm-2" style={{width:80}}>Cancel</button>
+                <button type='button' className="btn btn-danger mx-sm-2" style={{width:80}} onClick={handleShowCancelPrompt}>Cancel</button>
               </div>
             </form>
         </Tab>
         <Tab eventKey="preview" title="Preview Article">
           <div className='text-left m-5'> 
-            <h1>{subject}</h1>
+            <h1 id='subject'>Subject</h1>
             <hr></hr>
             <br></br>
-            <p>{content}</p>
+            <p id='content'></p>
           </div>
         </Tab>
       </Tabs>           
     </PagePattern>
-
+    {cancelState === true && <Redirect to='/'></Redirect>}
+    <Modal show={showCancelPrompt} animation={false} onHide={handleCloseCancelPrompt}>
+        <Modal.Header closeButton>
+          <Modal.Title>Alert!</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Everything written will be delete and you will move to homepage. Do you still want to leave ?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseCancelPrompt}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleCancelWriting}>
+            Leave
+          </Button>
+        </Modal.Footer>
+    </Modal>
     <Footer/>    
   </>
 }

@@ -7,17 +7,20 @@ import Footer from '../pattern/Footer';
 import { Redirect } from 'react-router-dom';
 
 const SearchBanner = () => {
-
+// Start declare state
   const [searchTerm, setSearchTerm] = React.useState(undefined);
 
   const [subject, setSubject] = React.useState('');
+// End declare state
 
+// Start handle state
   const handleSearchInput = (event) => setSearchTerm(event.target.value);
 
   const handleSearchSubmit = (event) => {
     setSubject(searchTerm);
     event.preventDefault();
   }
+// End handle state
 
   return <>
     <Jumbotron fluid style={{height: 845}}>
