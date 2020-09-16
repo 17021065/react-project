@@ -8,6 +8,7 @@ import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
 import { Redirect } from 'react-router-dom';
 import $ from 'jquery';
+import database from '../database';
 
 const databaseReducer = (state, action) => {
     switch(action.type){
@@ -36,7 +37,7 @@ const databaseReducer = (state, action) => {
     }
 }
 
-const WriteUI = () => {
+const WriteUI = ({match}) => {
 // Start declare state
   const [date, setDate] = React.useState(new Date());
 
@@ -50,6 +51,18 @@ const WriteUI = () => {
 // End declare state
 
 // Start handle state
+  React.useEffect(() => {
+    if(match.params.articleID){
+      let article = database.filter(item => 
+        item.articleID === (match.params.articleID*1)
+      );
+      setArticleSubject(article[0].subject);
+      setArticleContent(article[0].content);
+    }
+  }, [match, setArticleSubject, setArticleContent]);
+  
+  const handleInitCkeditor = (editor) => editor.setData(articleContent);
+
   const handleSubjectChange = (event) => setArticleSubject(event.target.value);
 
   const handleContentChange = (event, editor) => setArticleContent(editor.getData());
@@ -102,9 +115,9 @@ const WriteUI = () => {
               </div>
               <div className="form-group">
                 <CKEditor 
-                  editor={ClassicEditor}
-                  data={articleContent} 
+                  editor={ClassicEditor} 
                   onChange={handleContentChange}
+                  onInit={handleInitCkeditor}
                 />
               </div>
               <div className='form-group'>

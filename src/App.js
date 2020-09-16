@@ -33,7 +33,8 @@ function App() {
     <Route path="/" exact component={Banner}></Route>
     <Route path="/search/:subject" component={SearchUI}></Route>
     <Route path="/search" exact component={SearchBanner}></Route>
-    <Route path="/write" component={WriteUI}></Route>
+    <Route path="/write/:articleID" component={WriteUI}></Route>
+    <Route path="/write" exact component={WriteUI}></Route>
     <Route path="/article/:articleID" component={Article}></Route>
     </div>
     </Router>

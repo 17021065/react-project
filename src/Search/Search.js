@@ -6,6 +6,7 @@ import List from './List';
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
 import database from '../database';
+import { Redirect } from 'react-router-dom';
 
 
 const solveData = (database, subject) => {
@@ -26,20 +27,27 @@ const solveData = (database, subject) => {
 const SearchUI = ({match}) => {
   
 // Start declare state
-  const [searchTerm, setSearchTerm] = React.useState(match.params.subject);
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   const [active, setActive] = React.useState(1);
 
-  const [subject, setSubject] = React.useState(match.params.subject);
+  const [subject, setSubject] = React.useState('');
+
+  const [newSearch, setNewSearch] = React.useState(false);
 // End declare state 
 
-// Start manage search bar state 
+// Start manage search bar state
+  React.useEffect(() => {
+    if(match.params.subject){
+      setSearchTerm(match.params.subject);
+      setSubject(match.params.subject);
+    }
+  }, [match]);
+
   const handleSearchInput = (event) => setSearchTerm(event.target.value);
   
   const handleSearchSubmit = (event) => {   
-    setSubject(searchTerm);
-    setActive(1);
-    event.preventDefault();
+    setNewSearch(true);
   }
 
   const [raw, processed] = solveData(database, subject);
@@ -64,7 +72,7 @@ const SearchUI = ({match}) => {
     <PagePattern>
       <div className='mx-auto' style={{width: 400}}>
         <Form inline onSubmit={handleSearchSubmit}>
-          <FormControl type="text" value={searchTerm} placeholder="Search" className="mr-sm-2 mx-4 w-75" onChange={handleSearchInput}/>
+          <FormControl value={searchTerm} placeholder="Search" className="mr-sm-2 mx-4 w-75" onChange={handleSearchInput}/>
           <Button type="submit" variant="outline-secondary" disabled={!searchTerm}>
             <img src={search} alt='searchIcon'></img>
           </Button>
@@ -87,7 +95,7 @@ const SearchUI = ({match}) => {
           )}
       </div>
     </PagePattern>
-
+    {newSearch && <Redirect to={`/search/${searchTerm}`}></Redirect>}
     <Footer/>
   </>
 }
