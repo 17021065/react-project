@@ -1,12 +1,12 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const PagePattern = ({children}) =>(
+const LoginPattern = ({children}) => (
   <div className='container-fluid bg-secondary py-4'>
-    <div className='shadow-lg container py-4 bg-light'>
+    <div className='shadow-lg container py-4 bg-light' style={{width: 500}}>
       {children}
     </div>
   </div>
 )
 
-export default PagePattern;
+export default LoginPattern;

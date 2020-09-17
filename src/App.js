@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar,Nav} from 'react-bootstrap';
+import { Navbar,Nav, NavDropdown} from 'react-bootstrap';
 import { BrowserRouter as Router, Route} from "react-router-dom";
 import WriteUI from './write/Write';
 import SearchUI from './search/Search';
@@ -9,8 +9,17 @@ import Banner from './pattern/Banner';
 import article from './img/article-24px.svg';
 import Article from './search/Article';
 import SearchBanner from './search/SearchBanner';
+import Login from './login/Login';
+import Signup from './login/Signup';
+import useSemiPersistentState from './controller/State';
 
 function App() {
+  
+  const [user, setUser] = useSemiPersistentState('user', '');
+
+  const logOutRequest = () => setUser('');
+  
+  const handleSetUser = (username) => setUser(username);
 
   return (
     <Router>
@@ -23,10 +32,19 @@ function App() {
           <Nav className="mr-auto">
             <Nav.Link href="/search">Search</Nav.Link>
             <Nav.Link href="/write">Write</Nav.Link>
-          </Nav>
-          <Navbar.Text>
-            Signed in as: <a href="#login">Admin</a>
-          </Navbar.Text>
+          </Nav>         
+            {user !== '' ? 
+              (
+                <>
+                <NavDropdown title={`Signed in as: ${user}`} id="basic-nav-dropdown">
+                  <NavDropdown.Item href="#action/3.1">Change password</NavDropdown.Item>
+                  <NavDropdown.Item onClick={logOutRequest}>Log out</NavDropdown.Item>
+                </NavDropdown>   
+                </> 
+              ):(
+                <Navbar.Text><a className='mx-2 text-primary' href='/login'>Sign in</a></Navbar.Text>
+              )
+            }
         </Navbar.Collapse>
     </Navbar>
 
@@ -36,6 +54,8 @@ function App() {
     <Route path="/write/:articleID" component={WriteUI}></Route>
     <Route path="/write" exact component={WriteUI}></Route>
     <Route path="/article/:articleID" component={Article}></Route>
+    <Route path="/login"><Login handleSetUser={handleSetUser}/></Route>
+    <Route path="/signup" component={Signup}></Route>
     </div>
     </Router>
   );
