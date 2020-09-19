@@ -11,7 +11,9 @@ import Article from './search/Article';
 import SearchBanner from './search/SearchBanner';
 import Login from './login/Login';
 import Signup from './login/Signup';
+import SignupSuccess from './login/SignupSuccess';
 import useSemiPersistentState from './controller/State';
+import Profile from './login/Profile';
 
 function App() {
   
@@ -37,7 +39,7 @@ function App() {
               (
                 <>
                 <NavDropdown title={`Signed in as: ${user}`} id="basic-nav-dropdown">
-                  <NavDropdown.Item href="#action/3.1">Change password</NavDropdown.Item>
+                  <NavDropdown.Item href={`/profile/${user}`}>Profile</NavDropdown.Item>
                   <NavDropdown.Item onClick={logOutRequest}>Log out</NavDropdown.Item>
                 </NavDropdown>   
                 </> 
@@ -55,7 +57,9 @@ function App() {
     <Route path="/write" exact component={WriteUI}></Route>
     <Route path="/article/:articleID" component={Article}></Route>
     <Route path="/login"><Login handleSetUser={handleSetUser}/></Route>
-    <Route path="/signup" component={Signup}></Route>
+    <Route path="/signup" exact component={Signup}></Route>
+    <Route path="/signup/success" component={SignupSuccess}></Route>
+    <Route path="/profile/:username" component={Profile}></Route>
     </div>
     </Router>
   );
