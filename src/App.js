@@ -14,6 +14,7 @@ import Signup from './login/Signup';
 import SignupSuccess from './login/SignupSuccess';
 import useSemiPersistentState from './controller/State';
 import Profile from './login/Profile';
+import Experiment from './server/Experiment';
 
 function App() {
   
@@ -34,6 +35,7 @@ function App() {
           <Nav className="mr-auto">
             <Nav.Link href="/search">Search</Nav.Link>
             <Nav.Link href="/write">Write</Nav.Link>
+            <Nav.Link href="/experiment">Experiment</Nav.Link>
           </Nav>         
             {user !== '' ? 
               (
@@ -60,6 +62,7 @@ function App() {
     <Route path="/signup" exact component={Signup}></Route>
     <Route path="/signup/success" component={SignupSuccess}></Route>
     <Route path="/profile/:username" component={Profile}></Route>
+    <Route path="/experiment" component={Experiment}></Route>
     </div>
     </Router>
   );
