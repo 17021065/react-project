@@ -4,6 +4,7 @@ import { Alert } from 'react-bootstrap';
 import { Redirect } from "react-router-dom";
 import LoginPattern from '../pattern/LoginPattern';
 import Footer from '../pattern/Footer';
+import { withFirebase } from '../controller';
 
 let account = [
   {
@@ -20,7 +21,7 @@ let account = [
   },    
 ]
 
-const Login = ({handleSetUser}) => {
+const LoginBase = ({handleSetUser, firebase}) => {
 // Start declare state
   const [username, setUsername] = React.useState('');
 
@@ -86,5 +87,7 @@ const Login = ({handleSetUser}) => {
   <Footer/>
   </>    
 } 
+
+const Login = withFirebase(LoginBase);
 
 export default Login;

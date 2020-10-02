@@ -4,6 +4,8 @@ import { Redirect } from "react-router-dom";
 import LoginPattern from '../pattern/LoginPattern';
 import Footer from '../pattern/Footer';
 import { Alert } from 'react-bootstrap';
+import { withFirebase } from '../controller';
+import { log } from 'async';
 
 let account = [
   {
@@ -20,7 +22,7 @@ let account = [
   },    
 ]
 
-const Signup = () => {
+const SignupBase = ({firebase}) => {
 
 // Start declare state
   const [username, setUsername] = React.useState('');
@@ -69,7 +71,7 @@ const Signup = () => {
         event.preventDefault();
         event.stopPropagation();
       }else{
-        setRedirect(true);
+        firebase.createUserWithEmailAndPassword(email, password);
         event.preventDefault();
       }
     }
@@ -110,5 +112,7 @@ const Signup = () => {
   <Footer/>
   </>    
 } 
+
+const Signup = withFirebase(SignupBase);
 
 export default Signup;
