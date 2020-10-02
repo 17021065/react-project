@@ -1,30 +1,22 @@
 import React from 'react';
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
-import $ from 'jquery';
+import {FirebaseContext} from '../controller';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Experiment = () => {
 
-  const fetch_data = () => {
-    var str = 'helloworld';
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = () => {
-      if (xhttp.readyState === 4 && xhttp.status === 200) {
-        document.getElementById("demo").innerHTML = xhttp.responseText;
-        console.log(xhttp.responseText);
-      }
-    };
-    xhttp.open("GET", "exp.php?q="+str, true);
-    xhttp.send();
-  }
-
   return <> 
     <PagePattern>
       <div className='table-responsive'>
-        <button type='button' onClick={fetch_data}>Show</button>
+        <button type='button'>Show</button>
         <p id='demo'></p>
       </div>
+      <FirebaseContext.Consumer>
+        {firebase => {
+          return <div>I've access to Firebase and render something.</div>;
+        }}
+      </FirebaseContext.Consumer>
     </PagePattern>
 
     <Footer/>
