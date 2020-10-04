@@ -21,7 +21,7 @@ let account = [
   },    
 ]
 
-const LoginBase = ({handleSetUser, firebase}) => {
+const SigninBase = ({handleSetUser, firebase}) => {
 // Start declare state
   const [username, setUsername] = React.useState('');
 
@@ -85,6 +85,6 @@ const LoginBase = ({handleSetUser, firebase}) => {
   </>    
 } 
 
-const Login = withFirebase(LoginBase);
+const Signin = withFirebase(SigninBase);
 
-export default Login;
+export default Signin;

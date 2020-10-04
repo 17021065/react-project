@@ -9,7 +9,7 @@ import Banner from './pattern/Banner';
 import article from './img/article-24px.svg';
 import Article from './search/Article';
 import SearchBanner from './search/SearchBanner';
-import Login from './login/Login';
+import Signin from './login/Signin';
 import Signup from './login/Signup';
 import SignupSuccess from './login/SignupSuccess';
 import useSemiPersistentState from './controller/State';
@@ -59,7 +59,7 @@ function App() {
     <Route path="/write/:articleID" component={WriteUI}></Route>
     <Route path="/write" exact component={WriteUI}></Route>
     <Route path="/article/:articleID" component={Article}></Route>
-    <Route path="/login"><Login handleSetUser={handleSetUser}/></Route>
+    <Route path="/signin"><Signin handleSetUser={handleSetUser}/></Route>
     <Route path="/signup" exact component={Signup}></Route>
     <Route path="/signup/success" component={SignupSuccess}></Route>
     <Route path="/profile/:username" component={Profile}></Route>
