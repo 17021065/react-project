@@ -6,22 +6,7 @@ import LoginPattern from '../pattern/LoginPattern';
 import Footer from '../pattern/Footer';
 import { withFirebase } from '../controller';
 
-let account = [
-  {
-    id: 1,
-    username: 'root',
-    password: '1',
-    email: 'root1234@gmail.com',
-  },
-  {
-    id: 2,
-    username: 'brand',
-    password: '1',
-    email: 'brand5678@gmail.com',
-  },    
-]
-
-const SigninBase = ({handleSetUser, firebase}) => {
+const SigninBase = ({firebase}) => {
 // Start declare state
   const [username, setUsername] = React.useState('');
 

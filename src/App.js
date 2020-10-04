@@ -12,19 +12,20 @@ import SearchBanner from './search/SearchBanner';
 import Signin from './login/Signin';
 import Signup from './login/Signup';
 import SignupSuccess from './login/SignupSuccess';
-import useSemiPersistentState from './controller/State';
+import useSemiPersistentState from './controller/state/State';
 import Profile from './login/Profile';
 import Experiment from './server/Experiment';
 import SignoutButton from './login/Signout';
+import { withFirebase } from './controller';
 
-function App() {
+function AppBase({firebase}) {
   
-  const [user, setUser] = useSemiPersistentState('user', '');
+  const [user, setUser] = useSemiPersistentState('user', null);
 
-  const logOutRequest = () => setUser('');
+  React.useEffect(() => {
+    firebase.auth.onAuthStateChanged(authUser => authUser ? setUser(authUser) : setUser(null));
+  }, [user]);
   
-  const handleSetUser = (username) => setUser(username);
-
   return (
     <Router>
     <div className="App">
@@ -38,16 +39,16 @@ function App() {
             <Nav.Link href="/write">Write</Nav.Link>
             <Nav.Link href="/experiment">Experiment</Nav.Link>
           </Nav>         
-            {user !== '' ? 
+            {user ? 
               (
                 <>
-                <NavDropdown title={`Signed in as: ${user}`} id="basic-nav-dropdown">
-                  <NavDropdown.Item href={`/profile/${user}`}>Profile</NavDropdown.Item>
+                <NavDropdown title={`Signed in as: ${user.email}`} id="basic-nav-dropdown">
+                  <NavDropdown.Item href='#'>Profile</NavDropdown.Item>
                   <SignoutButton/>
                 </NavDropdown>   
                 </> 
               ):(
-                <Navbar.Text><a className='mx-2 text-primary' href='/login'>Sign in</a></Navbar.Text>
+                <Navbar.Text><a className='mx-2 text-primary' href='/signin'>Sign in</a></Navbar.Text>
               )
             }
         </Navbar.Collapse>
@@ -59,7 +60,7 @@ function App() {
     <Route path="/write/:articleID" component={WriteUI}></Route>
     <Route path="/write" exact component={WriteUI}></Route>
     <Route path="/article/:articleID" component={Article}></Route>
-    <Route path="/signin"><Signin handleSetUser={handleSetUser}/></Route>
+    <Route path="/signin" component={Signin}></Route>
     <Route path="/signup" exact component={Signup}></Route>
     <Route path="/signup/success" component={SignupSuccess}></Route>
     <Route path="/profile/:username" component={Profile}></Route>
@@ -68,5 +69,7 @@ function App() {
     </Router>
   );
 }
+
+const App = withFirebase(AppBase);
 
 export default App;
