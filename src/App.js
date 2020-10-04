@@ -1,12 +1,10 @@
 import React from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar,Nav, NavDropdown} from 'react-bootstrap';
 import { BrowserRouter as Router, Route} from "react-router-dom";
 import WriteUI from './write/Write';
 import SearchUI from './search/Search';
 import Banner from './pattern/Banner';
-import article from './img/article-24px.svg';
 import Article from './search/Article';
 import SearchBanner from './search/SearchBanner';
 import Signin from './login/Signin';
@@ -15,8 +13,9 @@ import SignupSuccess from './login/SignupSuccess';
 import useSemiPersistentState from './controller/state/State';
 import Profile from './login/Profile';
 import Experiment from './server/Experiment';
-import SignoutButton from './login/Signout';
+import Navigation from './pattern/Navigation';
 import { withFirebase } from './controller/firebase';
+import { AuthUserContext } from './controller/session';
 
 function AppBase({firebase}) {
   
@@ -24,35 +23,15 @@ function AppBase({firebase}) {
 
   React.useEffect(() => {
     firebase.auth.onAuthStateChanged(authUser => authUser ? setUser(authUser) : setUser(null));
+    console.log(user);
   }, [user]);
   
   return (
+    <AuthUserContext.Provider value={user}>
     <Router>
     <div className="App">
 
-    <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/"><img src={article} alt='Library Icon'></img>Library</Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto">
-            <Nav.Link href="/search">Search</Nav.Link>
-            <Nav.Link href="/write">Write</Nav.Link>
-            <Nav.Link href="/experiment">Experiment</Nav.Link>
-          </Nav>         
-            {user ? 
-              (
-                <>
-                <NavDropdown title={`Signed in as: ${user.email}`} id="basic-nav-dropdown">
-                  <NavDropdown.Item href='#'>Profile</NavDropdown.Item>
-                  <SignoutButton/>
-                </NavDropdown>   
-                </> 
-              ):(
-                <Navbar.Text><a className='mx-2 text-primary' href='/signin'>Sign in</a></Navbar.Text>
-              )
-            }
-        </Navbar.Collapse>
-    </Navbar>
+    <Navigation/>
 
     <Route path="/" exact component={Banner}></Route>
     <Route path="/search/:subject" component={SearchUI}></Route>
@@ -67,6 +46,7 @@ function AppBase({firebase}) {
     <Route path="/experiment" component={Experiment}></Route>
     </div>
     </Router>
+    </AuthUserContext.Provider>
   );
 }
 
