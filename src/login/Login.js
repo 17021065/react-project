@@ -38,17 +38,14 @@ const LoginBase = ({handleSetUser, firebase}) => {
   const handlePasswordChange = (event) => setPassword(event.target.value);
 
   const handleLogInSubmit = (event) => {
-    let acc = account.filter((item) => item.username === username);
+    /* let acc = account.filter((item) => item.username === username);
     if(acc.length===0){
       setPrompt('Your username does not exist!')
-    }else{
-      if(acc[0].password===password){
-        handleSetUser(acc[0].username);
-        setRedirect(true);
-      }else{
-        setPrompt('Wrong password!');
-      }
-    }
+    }else{} */
+      firebase.doSignInWithEmailAndPassword(username, password)
+      .then(() => setRedirect(true))
+      .catch(err => console.log(err));
+    
     event.preventDefault();
   }
 // End handle state

@@ -5,7 +5,6 @@ import LoginPattern from '../pattern/LoginPattern';
 import Footer from '../pattern/Footer';
 import { Alert } from 'react-bootstrap';
 import { withFirebase } from '../controller';
-import { log } from 'async';
 
 let account = [
   {
@@ -71,7 +70,12 @@ const SignupBase = ({firebase}) => {
         event.preventDefault();
         event.stopPropagation();
       }else{
-        firebase.createUserWithEmailAndPassword(email, password);
+        firebase.doCreateUserWithEmailAndPassword(email, password)
+        .then(authUser => {
+          console.log(authUser);
+          setRedirect(true);
+        })
+        .catch(err => console.log(err));
         event.preventDefault();
       }
     }

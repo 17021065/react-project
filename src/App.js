@@ -15,6 +15,7 @@ import SignupSuccess from './login/SignupSuccess';
 import useSemiPersistentState from './controller/State';
 import Profile from './login/Profile';
 import Experiment from './server/Experiment';
+import SignoutButton from './login/Signout';
 
 function App() {
   
@@ -42,7 +43,7 @@ function App() {
                 <>
                 <NavDropdown title={`Signed in as: ${user}`} id="basic-nav-dropdown">
                   <NavDropdown.Item href={`/profile/${user}`}>Profile</NavDropdown.Item>
-                  <NavDropdown.Item onClick={logOutRequest}>Log out</NavDropdown.Item>
+                  <SignoutButton/>
                 </NavDropdown>   
                 </> 
               ):(
