@@ -4,7 +4,7 @@ import { Redirect } from "react-router-dom";
 import LoginPattern from '../pattern/LoginPattern';
 import Footer from '../pattern/Footer';
 import { Alert } from 'react-bootstrap';
-import { withFirebase } from '../controller';
+import { withFirebase } from '../controller/firebase';
 
 let account = [
   {

@@ -16,7 +16,7 @@ import useSemiPersistentState from './controller/state/State';
 import Profile from './login/Profile';
 import Experiment from './server/Experiment';
 import SignoutButton from './login/Signout';
-import { withFirebase } from './controller';
+import { withFirebase } from './controller/firebase';
 
 function AppBase({firebase}) {
   
