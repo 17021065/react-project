@@ -19,8 +19,9 @@ const NavigationBase = ({authUser}) => {
             {authUser ? 
               (
                 <>
-                <NavDropdown title={`Signed in as: ${authUser.email}`} id="basic-nav-dropdown">
+                <NavDropdown title={`Signed in as: ${authUser.email}`} id="basic-nav-dropdown" alignRight={true}>
                   <NavDropdown.Item href='#'>Profile</NavDropdown.Item>
+                  <NavDropdown.Item href='/change-password'>Change Password</NavDropdown.Item>
                   <SignoutButton/>
                 </NavDropdown>   
                 </> 

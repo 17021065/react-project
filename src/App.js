@@ -10,46 +10,38 @@ import SearchBanner from './search/SearchBanner';
 import Signin from './login/Signin';
 import Signup from './login/Signup';
 import SignupSuccess from './login/SignupSuccess';
-import useSemiPersistentState from './controller/state/State';
 import Profile from './login/Profile';
 import Experiment from './server/Experiment';
 import Navigation from './pattern/Navigation';
-import { withFirebase } from './controller/firebase';
-import { AuthUserContext } from './controller/session';
+import ForgotPassword from './login/ForgotPassword';
+import ChangePassword from './login/ChangePassword';
+import { withAuthUser } from './controller/session';
 
-function AppBase({firebase}) {
-  
-  const [user, setUser] = useSemiPersistentState('user', null);
-
-  React.useEffect(() => {
-    firebase.auth.onAuthStateChanged(authUser => authUser ? setUser(authUser) : setUser(null));
-    console.log(user);
-  }, [user]);
-  
+function AppBase() {
   return (
-    <AuthUserContext.Provider value={user}>
     <Router>
     <div className="App">
 
     <Navigation/>
 
-    <Route path="/" exact component={Banner}></Route>
-    <Route path="/search/:subject" component={SearchUI}></Route>
-    <Route path="/search" exact component={SearchBanner}></Route>
-    <Route path="/write/:articleID" component={WriteUI}></Route>
-    <Route path="/write" exact component={WriteUI}></Route>
-    <Route path="/article/:articleID" component={Article}></Route>
-    <Route path="/signin" component={Signin}></Route>
-    <Route path="/signup" exact component={Signup}></Route>
-    <Route path="/signup/success" component={SignupSuccess}></Route>
-    <Route path="/profile/:username" component={Profile}></Route>
-    <Route path="/experiment" component={Experiment}></Route>
+    <Route path="/" exact component={Banner}/>
+    <Route path="/search/:subject" component={SearchUI}/>
+    <Route path="/search" exact component={SearchBanner}/>
+    <Route path="/write/:articleID" component={WriteUI}/>
+    <Route path="/write" exact component={WriteUI}/>
+    <Route path="/article/:articleID" component={Article}/>
+    <Route path="/signin" component={Signin}/>
+    <Route path="/signup" exact component={Signup}/>
+    <Route path="/signup/success" component={SignupSuccess}/>
+    <Route path="/forgot-password" component={ForgotPassword}/>
+    <Route path="/change-password" component={ChangePassword}/>
+    <Route path="/profile/:username" component={Profile}/>
+    <Route path="/experiment" component={Experiment}/>
     </div>
     </Router>
-    </AuthUserContext.Provider>
   );
 }
 
-const App = withFirebase(AppBase);
+const App = withAuthUser(AppBase);
 
 export default App;

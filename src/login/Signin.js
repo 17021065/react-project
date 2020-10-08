@@ -59,6 +59,11 @@ const SigninBase = ({firebase}) => {
       </div>
       <div className='text-left mx-2 mt-4'>
         <p>
+          Forgot your password ? <a href='/forgot-password'>click here</a>.
+        </p>
+      </div>
+      <div className='text-left mx-2 mt-4'>
+        <p>
           Sign in is required for writing article.<br></br>
           If you do not have available account, sign up <a href='/signup'>here</a>.
         </p>
