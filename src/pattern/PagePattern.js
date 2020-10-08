@@ -1,5 +1,5 @@
 import React from 'react';
-import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PagePattern = ({children}) =>(
   <div className='container-fluid bg-secondary py-4'>

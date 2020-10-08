@@ -1,5 +1,5 @@
 import React from 'react';
-import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import database from '../database';
 import { Tabs, Tab,} from 'react-bootstrap';
 import Footer from '../pattern/Footer';

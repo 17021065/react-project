@@ -2,7 +2,7 @@ import React from 'react';
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
 import {FirebaseContext} from '../controller/firebase';
-import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Experiment = () => {
 

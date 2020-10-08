@@ -1,5 +1,5 @@
 import React from 'react';
-import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navbar,Nav, NavDropdown} from 'react-bootstrap';
 import article from '../img/article-24px.svg';
 import { withAuthentication } from '../controller/session';
