@@ -72,9 +72,9 @@ const SignupBase = ({firebase}) => {
       }else{
         firebase.doCreateUserWithEmailAndPassword(email, password)
         .then(authUser => {
-          console.log(authUser);
-          setRedirect(true);
+          return firebase.user(authUser.user.uid).set({username, email});
         })
+        .then(() => setRedirect(true))
         .catch(err => console.log(err));
         event.preventDefault();
       }

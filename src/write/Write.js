@@ -9,6 +9,7 @@ import PagePattern from '../pattern/PagePattern';
 import { Redirect } from 'react-router-dom';
 import $ from 'jquery';
 import database from '../database';
+import { withAuthentication } from '../controller/session';
 
 const databaseReducer = (state, action) => {
     switch(action.type){
@@ -37,7 +38,7 @@ const databaseReducer = (state, action) => {
     }
 }
 
-const WriteUI = ({match}) => {
+const WriteUIBase = ({match, authUser}) => {
 // Start declare state
   const [date, setDate] = React.useState(new Date());
 
@@ -48,6 +49,11 @@ const WriteUI = ({match}) => {
   const [cancelState, setCancelState] = React.useState(false);
 
   const [showCancelPrompt, setShowCancelPrompt] = React.useState(false);
+
+  const condition = (authUser) => authUser != null;
+  if(condition(authUser)){
+    console.log('sign');
+  }else{console.log('not sign');}
 // End declare state
 
 // Start handle state
@@ -154,5 +160,7 @@ const WriteUI = ({match}) => {
     <Footer/>    
   </>
 }
+
+const WriteUI = withAuthentication(WriteUIBase);
 
 export default WriteUI;
