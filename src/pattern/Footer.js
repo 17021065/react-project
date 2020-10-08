@@ -1,5 +1,5 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import reactLogo from '../img/react-logo.jpg';
 import bootstrapLogo from '../img/bootstrap-logo.png';
 import ckeditorLogo from '../img/ckeditor-logo.png';

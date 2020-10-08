@@ -1,7 +1,7 @@
 import React from 'react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CKEditor from '@ckeditor/ckeditor5-react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Tabs, Tab, Modal, Button } from 'react-bootstrap';
 import useSemiPersistentState from '../controller/state/State'
 import Footer from '../pattern/Footer';

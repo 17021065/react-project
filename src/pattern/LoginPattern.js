@@ -1,5 +1,5 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
 
 const LoginPattern = ({children}) => (
   <div className='container-fluid bg-secondary py-4'>

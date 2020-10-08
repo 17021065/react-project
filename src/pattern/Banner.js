@@ -1,5 +1,5 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Jumbotron, Container } from 'react-bootstrap';
 
 const Banner = () => {

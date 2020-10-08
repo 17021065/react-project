@@ -1,5 +1,5 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Form,FormControl,Button,Spinner, Pagination, } from 'react-bootstrap';
 import search from '../img/search-24px.svg';
 import List from './List';

@@ -1,9 +1,9 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import '../sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Navbar,Nav, NavDropdown} from 'react-bootstrap';
 import article from '../img/article-24px.svg';
 import { withAuthentication } from '../controller/session';
-import SignoutButton from '../login/Signout';
+import SignoutButton from '../sign/Signout';
 
 const NavigationBase = ({authUser}) => {
   return <>

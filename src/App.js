@@ -1,20 +1,20 @@
 import React from 'react';
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import './sign/node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route} from "react-router-dom";
 import WriteUI from './write/Write';
 import SearchUI from './search/Search';
 import Banner from './pattern/Banner';
 import Article from './search/Article';
 import SearchBanner from './search/SearchBanner';
-import Signin from './login/Signin';
-import Signup from './login/Signup';
-import SignupSuccess from './login/SignupSuccess';
-import Profile from './login/Profile';
+import Signin from './sign/Signin';
+import Signup from './sign/Signup';
+import SignupSuccess from './sign/SignupSuccess';
+import Profile from './sign/Profile';
 import Experiment from './server/Experiment';
 import Navigation from './pattern/Navigation';
-import ForgotPassword from './login/ForgotPassword';
-import ChangePassword from './login/ChangePassword';
+import ForgotPassword from './sign/ForgotPassword';
+import ChangePassword from './sign/ChangePassword';
 import { withAuthUser } from './controller/session';
 
 function AppBase() {
