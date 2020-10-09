@@ -2,6 +2,8 @@ import React from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route} from "react-router-dom";
+import { compose } from 'recompose';
+import withRouter from './controller/router';
 import WriteUI from './write/Write';
 import SearchUI from './search/Search';
 import Banner from './pattern/Banner';
@@ -19,7 +21,6 @@ import { withAuthUser } from './controller/session';
 
 function AppBase() {
   return (
-    <Router>
     <div className="App">
 
     <Navigation/>
@@ -38,10 +39,9 @@ function AppBase() {
     <Route path="/profile/:username" component={Profile}/>
     <Route path="/experiment" component={Experiment}/>
     </div>
-    </Router>
   );
 }
 
-const App = withAuthUser(AppBase);
+const App = compose(withRouter, withAuthUser)(AppBase);
 
 export default App;

@@ -9,7 +9,7 @@ const withAuthUser = Component => {
 
     React.useEffect(() => {
       props.firebase.auth.onAuthStateChanged(authUser => authUser ? setUser(authUser) : setUser(null));
-    }, [user]);
+    }, [user, props.firebase.auth, setUser]);
 
     return <AuthUserContext.Provider value={user}>
       <Component {...props}/>

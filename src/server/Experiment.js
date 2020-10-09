@@ -1,26 +1,54 @@
 import React from 'react';
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
-import {FirebaseContext} from '../controller/firebase';
+import {withFirebase} from '../controller/firebase';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Experiment = () => {
+const ExperimentBase = ({firebase}) => {
+  const [userList, setUserList] = React.useState([]);
+
+  const handleClick = event => {
+    firebase.users().once('value', snapshot => {
+      const usersObject = snapshot.val();
+      const usersList = Object.keys(usersObject).map(key => ({
+        ...usersObject[key],
+        uid: key,
+      }));
+      setUserList(usersList);
+    })
+  }
 
   return <> 
     <PagePattern>
       <div className='table-responsive'>
-        <button type='button'>Show</button>
+        <button type='button' onClick={handleClick}>Show</button>
         <p id='demo'></p>
       </div>
-      <FirebaseContext.Consumer>
-        {firebase => {
-          return <div>I've access to Firebase and render something.</div>;
-        }}
-      </FirebaseContext.Consumer>
+      <UserList users={userList}/>
     </PagePattern>
 
     <Footer/>
   </>
 }
+
+const UserList = ({ users }) => (
+  <ul>
+    {users.map(user => (
+      <li key={user.uid}>
+        <span>
+          <strong>ID:</strong> {user.uid}
+        </span>
+        <span>
+          <strong>E-Mail:</strong> {user.email}
+        </span>
+        <span>
+          <strong>Username:</strong> {user.username}
+        </span>
+      </li>
+    ))}
+  </ul>
+);
+
+const Experiment = withFirebase(ExperimentBase);
 
 export default Experiment;

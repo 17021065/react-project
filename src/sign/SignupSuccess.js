@@ -18,7 +18,7 @@ const SignupSuccess = () => {
             <Spinner animation="border" />
         </Container>
         </Jumbotron>
-        {redirect && <Redirect to='/login'></Redirect>}
+        {redirect && <Redirect to='/'></Redirect>}
     </>
 }
 

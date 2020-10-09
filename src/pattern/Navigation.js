@@ -8,7 +8,6 @@ import { compose } from 'recompose';
 import SignoutButton from '../sign/Signout';
 
 const NavigationBase = ({authUser, firebase}) => {
-  console.log(firebase.user(authUser.uid));
   return <>
     <Navbar bg="light" expand="lg">
         <Navbar.Brand href="/"><img src={article} alt='Library Icon'></img>Library</Navbar.Brand>
