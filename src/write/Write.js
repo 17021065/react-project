@@ -2,6 +2,7 @@ import React from 'react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { compose } from 'recompose';
 import { Tabs, Tab, Modal, Button } from 'react-bootstrap';
 import useSemiPersistentState from '../controller/state/State'
 import Footer from '../pattern/Footer';
@@ -10,6 +11,7 @@ import { Redirect } from 'react-router-dom';
 import $ from 'jquery';
 import database from '../database';
 import { withAuthentication } from '../controller/session';
+import { withFirebase } from '../controller/firebase';
 
 const databaseReducer = (state, action) => {
     switch(action.type){
@@ -38,7 +40,7 @@ const databaseReducer = (state, action) => {
     }
 }
 
-const WriteUIBase = ({match, authUser}) => {
+const WriteUIBase = ({match, authUser, firebase}) => {
 // Start declare state
   const [date, setDate] = React.useState(new Date());
 
@@ -51,6 +53,7 @@ const WriteUIBase = ({match, authUser}) => {
   const [showCancelPrompt, setShowCancelPrompt] = React.useState(false);
 
   const condition = (authUser) => authUser != null;
+
   if(condition(authUser)){
     console.log('sign');
   }else{console.log('not sign');}
@@ -90,9 +93,6 @@ const WriteUIBase = ({match, authUser}) => {
 
   const handleArticleSave =  React.useCallback(() => {
     
-    console.log(articleSubject);
-    console.log(articleContent);
-    console.log(date);
   }, [date]);
     
   React.useEffect(() => {
@@ -161,6 +161,6 @@ const WriteUIBase = ({match, authUser}) => {
   </>
 }
 
-const WriteUI = withAuthentication(WriteUIBase);
+const WriteUI = compose(withFirebase, withAuthentication)(WriteUIBase);
 
 export default WriteUI;
