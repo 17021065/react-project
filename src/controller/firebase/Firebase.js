@@ -31,10 +31,21 @@ class Firebase {
 
   doPasswordUpdate = password => this.auth.currentUser.updatePassword(password);
 
+  doSendEmailVerification = () =>
+  this.auth.currentUser.sendEmailVerification({
+    url: process.env.REACT_APP_CONFIRMATION_EMAIL_REDIRECT,
+  });
+
   // *** USER API ***
   user = uid => this.db.ref(`users/${uid}`);
 
   users = () => this.db.ref('users'); 
+
+  // *** ARTICLE API *** 
+
+  article = aid => this.db.ref(`articles/${aid}`);
+
+  articles = () => this.db.ref('articles');
 }
 
 export default Firebase;

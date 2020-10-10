@@ -1,24 +1,22 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Alert } from 'react-bootstrap';
-import { Redirect } from "react-router-dom";
+import { compose } from 'recompose';
 import LoginPattern from '../pattern/LoginPattern';
 import Footer from '../pattern/Footer';
 import { withFirebase } from '../controller/firebase';
 
-const SigninBase = ({firebase}) => {
+const SigninBase = ({firebase, history}) => {
 // Start declare state
-  const [username, setUsername] = React.useState('');
+  const [email, setEmail] = React.useState('');
 
   const [password, setPassword] = React.useState('');
 
   const [prompt, setPrompt] = React.useState(undefined);
-
-  const [redirect, setRedirect] = React.useState(false);
 // End declare state
 
 // Start handle state
-  const handleUsernameChange = (event) => setUsername(event.target.value);
+  const handleEmailChange = (event) => setEmail(event.target.value);
   
   const handlePasswordChange = (event) => setPassword(event.target.value);
 
@@ -27,8 +25,8 @@ const SigninBase = ({firebase}) => {
     if(acc.length===0){
       setPrompt('Your username does not exist!')
     }else{} */
-      firebase.doSignInWithEmailAndPassword(username, password)
-      .then(() => setRedirect(true))
+      firebase.doSignInWithEmailAndPassword(email, password)
+      .then(() => window.history.back())
       .catch(err => console.log(err));
     
     event.preventDefault();
@@ -43,14 +41,14 @@ const SigninBase = ({firebase}) => {
       <div className='mx-2 text-left'>
         <form className="was-validated" onSubmit={handleLogInSubmit}>
           <div className="form-group">
-            <label htmlFor="uname">Username:</label>
-            <input type="text" className="form-control" id="uname" placeholder="Enter username" name="uname" onChange={handleUsernameChange} required></input>
+            <label htmlFor="email">Email:</label>
+            <input type="email" className="form-control" id="email" placeholder="Enter email" onChange={handleEmailChange} required></input>
             <div className="valid-feedback">Valid.</div>
             <div className="invalid-feedback">Please fill out this field.</div>
           </div>
           <div className="form-group">
             <label htmlFor="pwd">Password:</label>
-            <input type="password" className="form-control" id="pwd" placeholder="Enter password" name="pswd" onChange={handlePasswordChange} required></input>
+            <input type="password" className="form-control" id="pwd" placeholder="Enter password" onChange={handlePasswordChange} required></input>
             <div className="valid-feedback">Valid.</div>
             <div className="invalid-feedback">Please fill out this field.</div>
           </div>
@@ -70,11 +68,10 @@ const SigninBase = ({firebase}) => {
       </div>
     </div>
   </LoginPattern>
-  {redirect && <Redirect to='/'></Redirect>}
   <Footer/>
   </>    
 } 
 
-const Signin = withFirebase(SigninBase);
+const Signin = compose(withFirebase)(SigninBase);
 
 export default Signin;

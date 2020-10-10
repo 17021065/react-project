@@ -1,25 +1,9 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Redirect } from "react-router-dom";
 import LoginPattern from '../pattern/LoginPattern';
 import Footer from '../pattern/Footer';
 import { Alert } from 'react-bootstrap';
 import { withFirebase } from '../controller/firebase';
-
-let account = [
-  {
-    id: 1,
-    username: 'root',
-    password: '1',
-    email: 'root1234@gmail.com',
-  },
-  {
-    id: 2,
-    username: 'brand',
-    password: '1',
-    email: 'brand5678@gmail.com',
-  },    
-]
 
 const SignupBase = ({firebase}) => {
 
@@ -35,8 +19,6 @@ const SignupBase = ({firebase}) => {
   const [confirmPasswordPrompt, setConfirmPasswordPrompt] = React.useState(false);
 
   const [lackOfInfo, setLackOfInfo] = React.useState(false);
-
-  const [redirect, setRedirect] = React.useState(false);
 // End declare state
 
 // Start handle state
@@ -49,12 +31,6 @@ const SignupBase = ({firebase}) => {
   const handleEmailChange = (event) => setEmail(event.target.value);
 
   const checkUsername = () => {
-    let acc = account.filter((item) => item.username===username);
-    if(acc.length!==0){
-      return <p className='text-danger'>Username has been used. Please choose a different name.</p>;
-    }else{
-      return <p className='text-success'>Valid.</p>;
-    }
   }
 
   const handleLogInSubmit = (event) => {
@@ -74,7 +50,10 @@ const SignupBase = ({firebase}) => {
         .then(authUser => {
           return firebase.user(authUser.user.uid).set({username, email});
         })
-        .then(() => setRedirect(true))
+        .then(() => {
+          return firebase.doSendEmailVerification();
+        })
+        .then(() => window.location.replace('/'))
         .catch(err => console.log(err));
         event.preventDefault();
       }
@@ -89,6 +68,10 @@ const SignupBase = ({firebase}) => {
     <div className='my-3'>
       <div className='mx-2 text-left'>
         <form onSubmit={handleLogInSubmit}>
+          <div className='form-group'>
+            <label htmlFor="email">Email address:</label>
+            <input type="email" className="form-control" placeholder="Enter email" id="email" onChange={handleEmailChange}></input>
+          </div>
           <div className="form-group">
             <label htmlFor="uname">Username:</label>
             <input type="text" className="form-control" id="uname" placeholder="Enter username" onChange={handleUsernameChange}></input>
@@ -103,16 +86,11 @@ const SignupBase = ({firebase}) => {
             <input type="password" className="form-control" id="repwd" placeholder="Enter password again" onChange={handleConfirmPasswordChange}></input>
             {confirmPasswordPrompt && <p className='text-danger'>Wrong confirm password!</p>}
           </div>
-          <div className='form-group'>
-            <label htmlFor="email">Email address:</label>
-            <input type="email" className="form-control" placeholder="Enter email" id="email" onChange={handleEmailChange}></input>
-          </div>
           <button type="submit" className="btn btn-primary">Create</button>
         </form>
       </div>
     </div>
   </LoginPattern>
-  {redirect && <Redirect to='/signup/success'></Redirect>}
   <Footer/>
   </>    
 } 

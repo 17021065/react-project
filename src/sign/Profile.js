@@ -4,36 +4,22 @@ import { Table, Card} from 'react-bootstrap';
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
 import database from '../database';
-import { Redirect } from 'react-router-dom';
+import { withAuthentication } from '../controller/session';
+import { withFirebase } from '../controller/firebase';
+import { compose } from 'recompose';
 
-let account = [
-  {
-    id: 1,
-    username: 'root',
-    password: '1',
-    email: 'root1234@gmail.com',
-  },
-  {
-    id: 2,
-    username: 'brand',
-    password: '1',
-    email: 'brand5678@gmail.com',
-  },    
-]
-
-const Profile = ({match}) => {
-  const user = account.filter((item) => item.username===match.params.username); 
-
+const ProfileBase = ({authUser, firebase}) => {
   return <> 
     <PagePattern>
       <div className='m-3 text-left'>
         <h1>Information</h1>
         <div className='my-3 border pt-2 pl-3' style={{fontSize: 23}}>
-          <label style={{width: 70}}>User:</label><Highlight>{user[0].username}</Highlight>
+          <label style={{width: 70}}>User:</label><Highlight>{authUser.email}</Highlight>
           <br></br>
-          <label style={{width: 70}}>Email:</label>{user[0].email}
+          <label style={{width: 70}}>Email:</label>{authUser.email}
         </div>
       </div>
+      {!authUser.emailVerified && <button onClick={() => firebase.doSendEmailVerification()}>Email verify</button>}
       <br></br>
       <h1 className='text-left mx-3 mb-3'>Statistics</h1>
       <div className='mx-1 text-left row'>
@@ -67,5 +53,7 @@ const Profile = ({match}) => {
 }
 
 const Highlight = ({children}) => <strong className='text-primary'>{children}</strong> 
+
+const Profile = compose(withFirebase, withAuthentication)(ProfileBase);
 
 export default Profile;

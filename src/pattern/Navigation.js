@@ -8,6 +8,15 @@ import { compose } from 'recompose';
 import SignoutButton from '../sign/Signout';
 
 const NavigationBase = ({authUser, firebase}) => {
+  const [username, setUsername] = React.useState();
+
+  React.useEffect(() => {
+    !!authUser && firebase.user(authUser.uid).on('value', snapshot => {
+      const currentUser = snapshot.val();
+      !!currentUser && setUsername(currentUser.username);
+    });
+  }, [authUser, firebase]);
+
   return <>
     <Navbar bg="light" expand="lg">
         <Navbar.Brand href="/"><img src={article} alt='Library Icon'></img>Library</Navbar.Brand>
@@ -21,8 +30,8 @@ const NavigationBase = ({authUser, firebase}) => {
             {authUser ? 
               (
                 <>
-                <NavDropdown title={`Signed in as: ${authUser.email}`} id="basic-nav-dropdown" alignRight={true}>
-                  <NavDropdown.Item href='#'>Profile</NavDropdown.Item>
+                <NavDropdown title={`Signed in as: ${username}`} id="basic-nav-dropdown" alignRight={true}>
+                  <NavDropdown.Item href='/profile'>Profile</NavDropdown.Item>
                   <NavDropdown.Item href='/change-password'>Change Password</NavDropdown.Item>
                   <SignoutButton/>
                 </NavDropdown>   

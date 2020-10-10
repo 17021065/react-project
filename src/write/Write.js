@@ -3,14 +3,13 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import CKEditor from '@ckeditor/ckeditor5-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { compose } from 'recompose';
-import { Tabs, Tab, Modal, Button } from 'react-bootstrap';
+import { Tabs, Tab, Modal, Button, Alert } from 'react-bootstrap';
 import useSemiPersistentState from '../controller/state/State'
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
-import { Redirect } from 'react-router-dom';
 import $ from 'jquery';
 import database from '../database';
-import { withAuthentication } from '../controller/session';
+import { withAuthentication} from '../controller/session';
 import { withFirebase } from '../controller/firebase';
 
 const databaseReducer = (state, action) => {
@@ -40,23 +39,15 @@ const databaseReducer = (state, action) => {
     }
 }
 
-const WriteUIBase = ({match, authUser, firebase}) => {
+const WriteFromBase = ({match, authUser, firebase}) => {
 // Start declare state
-  const [date, setDate] = React.useState(new Date());
+  const [subject, setSubject] = useSemiPersistentState('subject', '');
 
-  const [articleSubject, setArticleSubject] = useSemiPersistentState('subject', '');
+  const [content, setContent] = useSemiPersistentState('content', '');
 
-  const [articleContent, setArticleContent] = useSemiPersistentState('content', '');
+  const [submit, setSubmit] = React.useState(false);
 
-  const [cancelState, setCancelState] = React.useState(false);
-
-  const [showCancelPrompt, setShowCancelPrompt] = React.useState(false);
-
-  const condition = (authUser) => authUser != null;
-
-  if(condition(authUser)){
-    console.log('sign');
-  }else{console.log('not sign');}
+  const [showPrompt, setShowPrompt] = React.useState(false);
 // End declare state
 
 // Start handle state
@@ -65,58 +56,66 @@ const WriteUIBase = ({match, authUser, firebase}) => {
       let article = database.filter(item => 
         item.articleID === (match.params.articleID*1)
       );
-      setArticleSubject(article[0].subject);
-      setArticleContent(article[0].content);
+      setSubject(article[0].subject);
+      setContent(article[0].content);
     }
-  }, [match, setArticleSubject, setArticleContent]);
+  }, [match, setSubject, setContent]);
   
-  const handleInitCkeditor = (editor) => editor.setData(articleContent);
+  const handleInitCkeditor = (editor) => editor.setData(content);
 
-  const handleSubjectChange = (event) => setArticleSubject(event.target.value);
+  const handleSubjectChange = (event) => setSubject(event.target.value);
 
-  const handleContentChange = (event, editor) => setArticleContent(editor.getData());
+  const handleContentChange = (event, editor) => setContent(editor.getData());
   
-  const handleCloseCancelPrompt = () => setShowCancelPrompt(false);
+  const handleClosePrompt = () => setShowPrompt(false);
 
-  const handleShowCancelPrompt = () => setShowCancelPrompt(true);
+  const handleShowPrompt = () => setShowPrompt(true);
 
-  const handleCancelWriting = (event) => {
-    setCancelState(true);
-    setArticleSubject('');
-    setArticleContent('');
+  const handleCancel = (event) => {
+    setSubject('');
+    setContent('');
+    window.location.reload();
   }
 
-  const handleArticleSubmit = (event) => {
-    setDate(new Date());
+  const handleSubmit = (event) => {
+    setSubmit(true);
     event.preventDefault();
   } 
 
   const handleArticleSave =  React.useCallback(() => {
-    
-  }, [date]);
+    if(submit) {
+      firebase.articles().push({
+        subject: subject,
+        content: content,
+        author: authUser.uid,
+        date: new Date(),
+      })
+      setSubmit(false);
+      setSubject('');
+      setContent('');
+      window.location.reload();
+    }
+  }, [submit]);
     
   React.useEffect(() => {
     handleArticleSave();
   }, [handleArticleSave]);
 
   React.useEffect(() => {
-    $('#subject').html(articleSubject);
-    $('#content').html(articleContent);
-  }, [articleContent, articleSubject]);
-
-  window.addEventListener('beforeunload', (e) =>{
-    window.confirm('Leave ?');
-  });
+    $('#subject').html(subject);
+    $('#content').html(content);
+  }, [content, subject]);
 // End handle state
 
   return <>
     <PagePattern>
       <Tabs defaultActiveKey="writing" transition={false} id="noanim-tab-example">
         <Tab eventKey="writing" title="Writing Page" className='mx-3 mt-2'>
+          {!authUser && <Alert variant='warning'>You have to sign in to submit article!</Alert>}
           <h1>Write new article</h1>
-            <form className='was-validated' onSubmit={handleArticleSubmit}>
+            <form className='was-validated' onSubmit={handleSubmit}>
               <div className="form-group">
-                <input type="text" className="form-control" placeholder="Subject" value={articleSubject} onChange={handleSubjectChange} required></input>
+                <input type="text" className="form-control" placeholder="Subject" value={subject} onChange={handleSubjectChange} required></input>
                 <div className='invalid-feedback'>Please fill out this field.</div>
               </div>
               <div className="form-group">
@@ -128,7 +127,7 @@ const WriteUIBase = ({match, authUser, firebase}) => {
               </div>
               <div className='form-group'>
                 <button type="submit" className="btn btn-success mx-sm-2" style={{width:80}}>Submit</button>
-                <button type='button' className="btn btn-danger mx-sm-2" style={{width:80}} onClick={handleShowCancelPrompt}>Cancel</button>
+                <button type='button' className="btn btn-danger mx-sm-2" style={{width:80}} onClick={handleShowPrompt}>Cancel</button>
               </div>
             </form>
         </Tab>
@@ -142,17 +141,16 @@ const WriteUIBase = ({match, authUser, firebase}) => {
         </Tab>
       </Tabs>           
     </PagePattern>
-    {cancelState === true && <Redirect to='/'></Redirect>}
-    <Modal show={showCancelPrompt} animation={false} onHide={handleCloseCancelPrompt}>
+    <Modal show={showPrompt} animation={false} onHide={handleClosePrompt}>
         <Modal.Header closeButton>
           <Modal.Title>Alert!</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Everything written will be delete and you will move to homepage. Do you still want to leave ?</Modal.Body>
+        <Modal.Body>Everything written will be deleted. Do you still want to leave?</Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseCancelPrompt}>
+          <Button variant="secondary" onClick={handleClosePrompt}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleCancelWriting}>
+          <Button variant="primary" onClick={handleCancel}>
             Leave
           </Button>
         </Modal.Footer>
@@ -161,6 +159,6 @@ const WriteUIBase = ({match, authUser, firebase}) => {
   </>
 }
 
-const WriteUI = compose(withFirebase, withAuthentication)(WriteUIBase);
+const WriteFrom = compose(withFirebase, withAuthentication)(WriteFromBase);
 
-export default WriteUI;
+export default WriteFrom;
