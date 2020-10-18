@@ -3,8 +3,8 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route} from "react-router-dom";
 import { compose } from 'recompose';
-import WriteFrom from './write/Write';
-import SearchUI from './search/Search';
+import WriteForm from './write/Write';
+import Searcher from './search/Search';
 import Banner from './pattern/Banner';
 import Article from './search/Article';
 import SearchBanner from './search/SearchBanner';
@@ -16,21 +16,33 @@ import Experiment from './server/Experiment';
 import Navigation from './pattern/Navigation';
 import ForgotPassword from './sign/ForgotPassword';
 import ChangePassword from './sign/ChangePassword';
-import { withAuthUser } from './controller/session';
+import { withAuthentication, withAuthUser } from './controller/session';
+import { withFirebase } from './controller/firebase';
 
-function AppBase() {
-  return (
+const Main = ({firebase, authUser}) => {
+// *** USERNAME ***
+  const [username, setUsername] = React.useState();
+  
+  React.useEffect(() => {
+    !!authUser && firebase.user(authUser.uid).on('value', snapshot => {
+      const currentUser = snapshot.val();
+      !!currentUser && setUsername(currentUser.username);
+    });
+  }, [authUser, firebase]);
+
+// *** RENDER ***
+  return <>
     <Router>
     <div className="App">
 
-    <Navigation/>
+    <Navigation username={username}/>
 
     <Route path="/" exact component={Banner}/>
-    <Route path="/search/:subject" component={SearchUI}/>
+    <Route path="/search/:subject" component={Searcher}/>
     <Route path="/search" exact component={SearchBanner}/>
-    <Route path="/write/:articleID" component={WriteFrom}/>
-    <Route path="/write" exact component={WriteFrom}/>
-    <Route path="/article/:articleID" component={Article}/>
+    <Route path="/write/:id" component={WriteForm}></Route>
+    <Route path="/write" exact component={WriteForm}/>
+    <Route path="/article/:id" component={Article}/>
     <Route path="/signin" component={Signin}/>
     <Route path="/signup" exact component={Signup}/>
     <Route path="/signup/success" component={SignupSuccess}/>
@@ -40,8 +52,10 @@ function AppBase() {
     <Route path="/experiment" component={Experiment}/>
     </div>
     </Router>
-  );
+  </>
 }
+
+const AppBase = compose(withFirebase, withAuthentication)(Main);
 
 const App = compose(withAuthUser)(AppBase);
 

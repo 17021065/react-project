@@ -8,7 +8,7 @@ const List = function ({content, subject, amount}){
         {amount} results were found for <strong className='text-primary'>"{subject}"</strong>
       </p>
       <hr></hr>
-      {content.map(item => <Item key={item.articleID} item={item}/>)}
+      {content.map(item => <Item key={item.aid} item={item}/>)}
     </div>
   }else{
     return <div className='container-fluid' style={{height: 476}}>
@@ -21,15 +21,18 @@ const List = function ({content, subject, amount}){
 }
   
 const Item = function ({item}){
-    return <div>
-            <div className="card my-2">
-              <div className="card-body">
-              <h4 className="card-title text-left">{item.subject}</h4>
-                <p className="card-text text-left">{item.content}</p>
-                <a href={`/article/${item.articleID}`} className="card-link float-left">See more</a>
-              </div>
-            </div>
-          </div>
+  return <>
+    <div className="card my-2">
+      <div className="card-body">
+        <h4 className="card-title text-left">{item.subject}</h4>
+        <p className="card-text text-left">
+          <strong>Author:</strong> {item.author}<br></br>
+          {item.date}
+        </p>
+        <a href={`/article/${item.aid}`} className="card-link float-left">See more</a>
+      </div>
+    </div>
+  </>
 }
 
 export default List; 

@@ -8,7 +8,6 @@ import useSemiPersistentState from '../controller/state/State'
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
 import $ from 'jquery';
-import database from '../database';
 import { withAuthentication} from '../controller/session';
 import { withFirebase } from '../controller/firebase';
 
@@ -39,27 +38,33 @@ const databaseReducer = (state, action) => {
     }
 }
 
-const WriteFromBase = ({match, authUser, firebase}) => {
-// Start declare state
+const WriteFormBase = ({match, authUser, firebase}) => {
+// *** STATE ***
   const [subject, setSubject] = useSemiPersistentState('subject', '');
 
   const [content, setContent] = useSemiPersistentState('content', '');
 
-  const [submit, setSubmit] = React.useState(false);
+  const [author, setAuthor] = React.useState();
 
   const [showPrompt, setShowPrompt] = React.useState(false);
-// End declare state
 
-// Start handle state
+// *** HANDLER ***
   React.useEffect(() => {
-    if(match.params.articleID){
-      let article = database.filter(item => 
-        item.articleID === (match.params.articleID*1)
-      );
-      setSubject(article[0].subject);
-      setContent(article[0].content);
+    !!authUser && firebase.user(authUser.uid).on('value', snapshot => {
+      const currentUser = snapshot.val();
+      !!currentUser && setAuthor(currentUser.username);
+    });
+  }, [authUser, firebase]);
+
+  React.useEffect(() => {
+    if(match.params.id){
+      firebase.article(match.params.id).once('value', snapshot => {
+        const article = snapshot.val();
+        setSubject(article.subject);
+        setContent(article.content);
+      });
     }
-  }, [match, setSubject, setContent]);
+  }, [match, setSubject, setContent, firebase]);
   
   const handleInitCkeditor = (editor) => editor.setData(content);
 
@@ -78,35 +83,22 @@ const WriteFromBase = ({match, authUser, firebase}) => {
   }
 
   const handleSubmit = (event) => {
-    setSubmit(true);
+    firebase.articles().push({
+      subject: subject,
+      content: content,
+      author: author,
+      date: new Date().toString(),
+    })
+    setSubject('');
+    setContent('');
+    window.location.reload();
     event.preventDefault();
   } 
 
-  const handleArticleSave =  React.useCallback(() => {
-    if(submit) {
-      firebase.articles().push({
-        subject: subject,
-        content: content,
-        author: authUser.uid,
-        date: new Date(),
-      })
-      setSubmit(false);
-      setSubject('');
-      setContent('');
-      window.location.reload();
-    }
-  }, [submit]);
-    
-  React.useEffect(() => {
-    handleArticleSave();
-  }, [handleArticleSave]);
+  $('#subject').html(subject);
+  $('#content').html(content);
 
-  React.useEffect(() => {
-    $('#subject').html(subject);
-    $('#content').html(content);
-  }, [content, subject]);
-// End handle state
-
+// *** RENDER ***
   return <>
     <PagePattern>
       <Tabs defaultActiveKey="writing" transition={false} id="noanim-tab-example">
@@ -121,6 +113,7 @@ const WriteFromBase = ({match, authUser, firebase}) => {
               <div className="form-group">
                 <CKEditor 
                   editor={ClassicEditor} 
+                  data={content}
                   onChange={handleContentChange}
                   onInit={handleInitCkeditor}
                 />
@@ -133,7 +126,7 @@ const WriteFromBase = ({match, authUser, firebase}) => {
         </Tab>
         <Tab eventKey="preview" title="Preview Article">
           <div className='text-left m-5'> 
-            <h1 id='subject'>Subject</h1>
+            <h1 className='display-4' id='subject'>@subject</h1>
             <hr></hr>
             <br></br>
             <p id='content'></p>
@@ -145,13 +138,13 @@ const WriteFromBase = ({match, authUser, firebase}) => {
         <Modal.Header closeButton>
           <Modal.Title>Alert!</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Everything written will be deleted. Do you still want to leave?</Modal.Body>
+        <Modal.Body>Everything written will be deleted. Do you still want to continue?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClosePrompt}>
-            Close
+            No
           </Button>
           <Button variant="primary" onClick={handleCancel}>
-            Leave
+            Yes
           </Button>
         </Modal.Footer>
     </Modal>
@@ -159,6 +152,6 @@ const WriteFromBase = ({match, authUser, firebase}) => {
   </>
 }
 
-const WriteFrom = compose(withFirebase, withAuthentication)(WriteFromBase);
+const WriteForm = compose(withFirebase, withAuthentication)(WriteFormBase);
 
-export default WriteFrom;
+export default WriteForm;

@@ -5,8 +5,8 @@ import search from '../img/search-24px.svg';
 import List from './List';
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
-import database from '../database';
-import { Redirect } from 'react-router-dom';
+import { compose } from 'recompose';
+import { withFirebase } from '../controller/firebase';
 
 
 const solveData = (database, subject) => {
@@ -24,50 +24,66 @@ const solveData = (database, subject) => {
   return [raw, processed];
 }
 
-const SearchUI = ({match}) => {
-  
-// Start declare state
+const SearcherBase = ({match, firebase}) => {
+
+// *** STATE ***
   const [searchTerm, setSearchTerm] = React.useState('');
 
   const [active, setActive] = React.useState(1);
 
-  const [subject, setSubject] = React.useState('');
+  const [rawList, setRawList] = React.useState([]);
 
-  const [newSearch, setNewSearch] = React.useState(false);
-// End declare state 
+  const [processedList, setProcessedList] = React.useState([]);
 
-// Start manage search bar state
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const [isError, setIsError] = React.useState(false);
+
+// *** HANDLER ***
+  // *** SEARCH BAR ***
   React.useEffect(() => {
-    if(match.params.subject){
-      setSearchTerm(match.params.subject);
-      setSubject(match.params.subject);
-    }
-  }, [match]);
+    setSearchTerm(match.params.subject);
+    setIsLoading(true);
+    setIsError(false);
+    firebase.articles().once('value', snapshot => {
+      const articlesObject = snapshot.val();
+      const articlesList = Object.keys(articlesObject).map(key => ({
+        ...articlesObject[key],
+        aid: key,
+      }));
+      const [raw, processed] = solveData(articlesList, match.params.subject);
+      setRawList(raw);
+      setProcessedList(processed);
+    })
+    .then(() =>  setIsLoading(false))
+    .catch(err => {
+      console.log(err);
+      setIsError(true);
+    });
+  }, [match, firebase]);
 
   const handleSearchInput = (event) => setSearchTerm(event.target.value);
   
   const handleSearchSubmit = (event) => {   
-    setNewSearch(true);
+    window.location.replace(`/search/${searchTerm}`);
+    event.preventDefault();
   }
 
-  const [raw, processed] = solveData(database, subject);
-// End manage search bar state
-
-// Start manage list state
+  // *** RESULT ***
   const handlePagination = (event) =>{
     setActive(event.target.innerHTML*1);
   }
 
   let items = [];
-  for (let number = 1; number <= processed.length; number++) {
+  for (let number = 1; number <= processedList.length; number++) {
     items.push(
       <Pagination.Item key={number} active={number === active} onClick={handlePagination}>
         {number}
       </Pagination.Item>,
     );
   }
-// End manage list state
 
+// *** RENDER ***
   return <>
     <PagePattern>
       <div className='mx-auto' style={{width: 400}}>
@@ -79,25 +95,27 @@ const SearchUI = ({match}) => {
         </Form>  
       </div>
       <div className='mx-auto w-75 my-4'>
-          {/* {articleList.isError && <p>Something went wrong ...</p>} */}
-
-          {subject==='' ? (
-            <p className='text-black-50' style={{height: 500, fontSize: 30, paddingTop: 200}}>
-              Type a subject into search bar to find related articles
-            </p>
-          ) : (
-            <div>
-              <List content={processed[active-1]} subject={subject} amount={raw.length}/>
+        {isError ? (
+          <p>Something went wrong ...</p>
+        ):(
+          isLoading ? (
+            <Spinner animation="border" />
+          ):(
+            <>
+              <List content={processedList[active-1]} subject={match.params.subject} amount={rawList.length}/>
               <div className='mx-auto mt-4'>
                 <Pagination>{items}</Pagination>
               </div>
-            </div>
-          )}
+            </>
+          )
+        )}   
       </div>
     </PagePattern>
-    {newSearch && <Redirect to={`/search/${searchTerm}`}></Redirect>}
+
     <Footer/>
   </>
 }
 
-export default SearchUI;
+const Searcher = compose(withFirebase)(SearcherBase)
+
+export default Searcher;
