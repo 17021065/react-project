@@ -11,33 +11,6 @@ import $ from 'jquery';
 import { withAuthentication} from '../controller/session';
 import { withFirebase } from '../controller/firebase';
 
-const databaseReducer = (state, action) => {
-    switch(action.type){
-        case 'ARTICLE_SUBMIT_INIT':
-            return{
-                ...state,
-                isLoading: true,
-                isError: false,
-            };
-        case 'ARTICLE_SUBMIT_SUCCESS':
-            return{
-                ...state,
-                isLoading: false,
-                date: action.payload.date,
-                subject: action.payload.subject,
-                content: action.payload.content,
-            };
-        case 'ARTICLE_SUBMIT_FAILURE':
-            return{
-                ...state,
-                isLoading: false,
-                isError: true,
-            };
-        default: 
-            throw new Error('Something strange happened #eofdtt02');
-    }
-}
-
 const WriteFormBase = ({match, authUser, firebase}) => {
 // *** STATE ***
   const [subject, setSubject] = useSemiPersistentState('subject', '');
@@ -46,22 +19,30 @@ const WriteFormBase = ({match, authUser, firebase}) => {
 
   const [author, setAuthor] = React.useState();
 
+  const [authorId, setAuthorId] = React.useState();
+
   const [showPrompt, setShowPrompt] = React.useState(false);
+
+  const [article, setArticle] = React.useState();
 
 // *** HANDLER ***
   React.useEffect(() => {
     !!authUser && firebase.user(authUser.uid).on('value', snapshot => {
       const currentUser = snapshot.val();
-      !!currentUser && setAuthor(currentUser.username);
+      if(!!currentUser) {
+        setAuthor(currentUser.username);
+        setAuthorId(authUser.uid);
+      } 
     });
   }, [authUser, firebase]);
 
   React.useEffect(() => {
     if(match.params.id){
       firebase.article(match.params.id).once('value', snapshot => {
-        const article = snapshot.val();
-        setSubject(article.subject);
-        setContent(article.content);
+        const _article = snapshot.val();
+        setArticle(_article);
+        setSubject(_article.subject);
+        setContent(_article.content);
       });
     }
   }, [match, setSubject, setContent, firebase]);
@@ -79,19 +60,33 @@ const WriteFormBase = ({match, authUser, firebase}) => {
   const handleCancel = (event) => {
     setSubject('');
     setContent('');
-    window.location.reload();
+    window.location.replace('/write');
   }
 
   const handleSubmit = (event) => {
-    firebase.articles().push({
-      subject: subject,
-      content: content,
-      author: author,
-      date: new Date().toString(),
-    })
+    if(match.params.id){
+      firebase.article(match.params.id).set({
+        ...article,
+        content: content,
+      });
+      firebase.histories().push({
+        article_id: match.params.id,
+        editor: author,
+        editor_id: authorId,
+        date: new Date().toString(),
+      });
+    }else{
+      firebase.articles().push({
+        subject: subject,
+        content: content,
+        author: author,
+        author_id: authorId,
+        date: new Date().toString(),
+      })
+    }
     setSubject('');
     setContent('');
-    window.location.reload();
+    window.location.replace('/write');
     event.preventDefault();
   } 
 
@@ -118,9 +113,9 @@ const WriteFormBase = ({match, authUser, firebase}) => {
                   onInit={handleInitCkeditor}
                 />
               </div>
-              <div className='form-group'>
+              <div className='form-group text-right'>
+                <button type='button' className="btn btn-danger" style={{width:80}} onClick={handleShowPrompt}>Cancel</button>
                 <button type="submit" className="btn btn-success mx-sm-2" style={{width:80}}>Submit</button>
-                <button type='button' className="btn btn-danger mx-sm-2" style={{width:80}} onClick={handleShowPrompt}>Cancel</button>
               </div>
             </form>
         </Tab>

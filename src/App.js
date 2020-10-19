@@ -12,7 +12,7 @@ import Signin from './sign/Signin';
 import Signup from './sign/Signup';
 import SignupSuccess from './sign/SignupSuccess';
 import Profile from './sign/Profile';
-import Experiment from './server/Experiment';
+import Experiment from './info/Experiment';
 import Navigation from './pattern/Navigation';
 import ForgotPassword from './sign/ForgotPassword';
 import ChangePassword from './sign/ChangePassword';

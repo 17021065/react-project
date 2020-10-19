@@ -46,6 +46,12 @@ class Firebase {
   article = aid => this.db.ref(`articles/${aid}`);
 
   articles = () => this.db.ref('articles');
+
+  // *** HISTORY API *** 
+
+  history = hid => this.db.ref(`histories/${hid}`);
+
+  histories = () => this.db.ref('histories');
 }
 
 export default Firebase;

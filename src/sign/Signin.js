@@ -26,7 +26,7 @@ const SigninBase = ({firebase, history}) => {
       setPrompt('Your username does not exist!')
     }else{} */
       firebase.doSignInWithEmailAndPassword(email, password)
-      .then(() => window.history.back())
+      .then(() => window.location.replace('/'))
       .catch(err => console.log(err));
     
     event.preventDefault();

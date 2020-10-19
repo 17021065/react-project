@@ -8,33 +8,6 @@ import $ from 'jquery';
 import { compose } from 'recompose';
 import { withFirebase } from '../controller/firebase';
 
-let history = [
-  {
-    id: 1,
-    name: 'man1',
-    email: 'man1@gmail.com',
-    date: new Date().toString(),
-  },
-  {
-    id: 2,
-    name: 'man2',
-    email: 'man2@gmail.com',
-    date: new Date().toString(),
-  },
-  {
-    id: 3,
-    name: 'woman1',
-    email: 'woman1@gmail.com',
-    date: new Date().toString(),
-  },
-  {
-    id: 4,
-    name: 'woman2',
-    email: 'woman2@gmail.com',
-    date: new Date().toString(),
-  },
-]
-
 const ArticleBase = ({match, firebase}) => {
 
 // *** STATE ***
@@ -43,6 +16,8 @@ const ArticleBase = ({match, firebase}) => {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const [isError, setIsError] = React.useState(false);
+
+  const [hisList, setHisList] = React.useState([]);
 
 // *** HANDLER ***
   const handleEditRequest = () => window.location.replace(`/write/${match.params.id}`);
@@ -64,6 +39,18 @@ const ArticleBase = ({match, firebase}) => {
       setIsError(true);
     });
   }, [match, firebase, article]);
+
+  React.useEffect(() => {
+    firebase.histories().once('value', snapshot => {
+      const historiesObject = snapshot.val();
+      const historiesList = Object.keys(historiesObject).map(key => ({
+        ...historiesObject[key],
+        hid: key,
+      }));
+      const _hisList = historiesList.filter(item => item.article_id === match.params.id);
+      setHisList(_hisList);
+    })
+  }, [match, firebase]);
 
 // *** RENDER ***
   return <> 
@@ -94,7 +81,7 @@ const ArticleBase = ({match, firebase}) => {
         </Tab>
         <Tab eventKey="history" title="Edit History">
           <div className='m-4'>
-            <HistoryTable history={history}/>
+            <HistoryTable hisList={hisList} />
           </div>
         </Tab>
       </Tabs>

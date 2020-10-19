@@ -1,23 +1,21 @@
 import React from 'react'
 import { Table, } from 'react-bootstrap'
 
-const HistoryTable = ({history}) => {
+const HistoriesTable = ({hisList}) => {
   return <>
     <Table responsive striped bordered size='sm'>
       <thead>
         <tr>
           <th>#</th>
           <th>Name</th>
-          <th>Email</th>
           <th>Date</th>
         </tr>
       </thead>
       <tbody>
-        {Array.from({ length: history.length }).map((_, row) => <tr>
-          <td>{row + 1}</td>
-          <td>{history[row].name}</td>
-          <td>{history[row].email}</td>
-          <td>{history[row].date}</td>
+        {hisList.map((_, index) => <tr key={index+1}>
+          <td>{index + 1}</td>
+          <td><a href={`/profile/${hisList[index].editor_id}`}>{hisList[index].editor}</a></td>
+          <td>{hisList[index].date}</td>
         </tr>
         )}
       </tbody>
@@ -25,4 +23,4 @@ const HistoryTable = ({history}) => {
   </>
 }
 
-export default HistoryTable;
+export default HistoriesTable;
