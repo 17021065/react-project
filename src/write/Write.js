@@ -27,7 +27,7 @@ const WriteFormBase = ({match, authUser, firebase}) => {
 
 // *** HANDLER ***
   React.useEffect(() => {
-    !!authUser && firebase.user(authUser.uid).on('value', snapshot => {
+    !!authUser && firebase.user(authUser.uid).once('value', snapshot => {
       const currentUser = snapshot.val();
       if(!!currentUser) {
         setAuthor(currentUser.username);

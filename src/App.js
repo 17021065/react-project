@@ -11,7 +11,7 @@ import SearchBanner from './search/SearchBanner';
 import Signin from './sign/Signin';
 import Signup from './sign/Signup';
 import SignupSuccess from './sign/SignupSuccess';
-import Profile from './sign/Profile';
+import Profile from './info/Profile';
 import Experiment from './info/Experiment';
 import Navigation from './pattern/Navigation';
 import ForgotPassword from './sign/ForgotPassword';
