@@ -6,7 +6,7 @@ import ckeditorLogo from '../img/ckeditor-logo.png';
 
 const Footer = () => {
     return <div>
-    <footer className='footer pt-4 bg-light'>
+    <footer className='footer pt-3 bg-light border'>
       <div className='container-fluid row pt-3'>
         <div className='col-sm-4 text-sm-left'>
           <p style={{marginLeft: 30}}><strong>Contract me:</strong></p>

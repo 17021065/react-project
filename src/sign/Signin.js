@@ -6,37 +6,40 @@ import LoginPattern from '../pattern/LoginPattern';
 import Footer from '../pattern/Footer';
 import { withFirebase } from '../controller/firebase';
 
-const SigninBase = ({firebase, history}) => {
-// Start declare state
+const SigninBase = ({firebase}) => {
+// *** STATE ***
   const [email, setEmail] = React.useState('');
 
   const [password, setPassword] = React.useState('');
 
-  const [prompt, setPrompt] = React.useState(undefined);
-// End declare state
+  const [isNotExisted, setIsNotExisted] = React.useState(false);
+  // *** CONDITION ***
+  const [passIsWrong, setPassIsWrong] = React.useState(false);
 
-// Start handle state
+
+// *** HANDLER ***
   const handleEmailChange = (event) => setEmail(event.target.value);
   
   const handlePasswordChange = (event) => setPassword(event.target.value);
 
   const handleLogInSubmit = (event) => {
-    /* let acc = account.filter((item) => item.username === username);
-    if(acc.length===0){
-      setPrompt('Your username does not exist!')
-    }else{} */
-      firebase.doSignInWithEmailAndPassword(email, password)
-      .then(() => window.location.replace('/'))
-      .catch(err => console.log(err));
-    
+    setIsNotExisted(false);
+    firebase.doSignInWithEmailAndPassword(email, password)
+    .then(() => window.location.replace('/'))
+    .catch(err => {
+      if(err.code==='auth/user-not-found') setIsNotExisted(true);
+      else if(err.code==='auth/wrong-password') setPassIsWrong(true);
+      else console.log(err);
+    });
     event.preventDefault();
   }
-// End handle state
 
+// *** RENDER ***
   return <>
   <LoginPattern> 
     <div className='my-2 pb-3'><h1>Sign in Library</h1></div>
-    {prompt && <Alert variant='danger'>{prompt}</Alert>}
+    {isNotExisted && <Alert variant='danger'>Account is not existed!</Alert>}
+    {passIsWrong && <Alert variant='danger'>Wrong password!</Alert>}
     <div className='my-3'>
       <div className='mx-2 text-left'>
         <form className="was-validated" onSubmit={handleLogInSubmit}>

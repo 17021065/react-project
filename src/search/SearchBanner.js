@@ -4,26 +4,22 @@ import { Jumbotron, Container,} from 'react-bootstrap';
 import search from '../img/search-24px.svg';
 import article from '../img/article-24px.svg';
 import Footer from '../pattern/Footer';
-import { Redirect } from 'react-router-dom';
 
 const SearchBanner = () => {
-// Start declare state
+// *** STATE ***
   const [searchTerm, setSearchTerm] = React.useState(undefined);
 
-  const [subject, setSubject] = React.useState('');
-// End declare state
-
-// Start handle state
+// *** HANDLER ***
   const handleSearchInput = (event) => setSearchTerm(event.target.value);
 
   const handleSearchSubmit = (event) => {
-    setSubject(searchTerm);
+    window.location.replace(`/search/${searchTerm}`);
     event.preventDefault();
   }
-// End handle state
 
+// *** RENDER ***
   return <>
-    <Jumbotron fluid style={{height: 845}}>
+    <Jumbotron fluid style={{height: 845}} className='bg-light border'>
       <Container className='my-auto' style={{height: 700}}>
         <h1 style={{height:350, fontSize:200, paddingTop:80, fontFamily: "Georgia"}}>
           <img src={article} alt='article icon' style={{width: 200, height:200}}></img>Library
@@ -36,7 +32,6 @@ const SearchBanner = () => {
         </div>
       </Container>
     </Jumbotron>
-    {subject!=='' && <Redirect to={`/search/${subject}`}></Redirect>}
     <Footer/>
   </>
 }

@@ -3,70 +3,71 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Spinner } from 'react-bootstrap';
 import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
-import { withAuthentication } from '../controller/session';
 import { withFirebase } from '../controller/firebase';
 import { compose } from 'recompose';
 import WriteList from './WriteList';
 
-const ProfileBase = ({authUser, firebase}) => {
+const ProfileBase = ({match, firebase}) => {
 // *** STATE ***  
   const [user, setUser] = React.useState();
 
-  const [userIsLoading, setUserIsLoading] = React.useState(false);
+  const [contactMail, setContactMail] = React.useState();
 
-  const [userIsError, setUserIsError] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const [isError, setIsError] = React.useState(false);
 
   const [writeList, setWriteList] = React.useState([]);
 
 // *** HANDLER ***
   React.useEffect(() => {
-    setUserIsError(false);
-    setUserIsLoading(true);
+    setIsError(false);
+    setIsLoading(true);
 
     // *** LOAD USER INFO ***
 
-    !!authUser && firebase.user(authUser.uid).once('value', snapshot => {
-      const currentUser = snapshot.val();
-      !!currentUser && setUser(currentUser.username);
+    firebase.user(match.params.id).once('value', snapshot => {
+      const userInfo = snapshot.val();
+      setUser(userInfo.username);
+      setContactMail(userInfo.email);
     })
-    .then(() => setUserIsLoading(false))
+    .then(() => {
+
+      // *** LOAD USER STAT ***
+
+      firebase.articles().once('value', snapshot => {
+        const writeListObject = snapshot.val();
+        const _writeArray = Object.keys(writeListObject).map(key => ({
+          ...writeListObject[key],
+          aid: key,
+        }));
+        const writeArray = _writeArray.filter(item => item.author_id === match.params.id);
+        setWriteList(writeArray);
+      });
+    })
+    .then(() => setIsLoading(false))
     .catch(err => {
       console.log(err);
-      setUserIsError(true);
-    });
-
-    // *** LOAD USER STAT ***
-    
-    firebase.articles().once('value', snapshot => {
-      const writeListObject = snapshot.val();
-      const _writeArray = Object.keys(writeListObject).map(key => ({
-        ...writeListObject[key],
-        aid: key,
-      }));
-      const writeArray = _writeArray.filter(item => item.author_id === authUser.uid);
-      setWriteList(writeArray);
-    });
-  }, [authUser, firebase]);
-console.log(writeList);
-  const handleEmailVerify = event => firebase.doSendEmailVerification();
-
+      setIsError(true);
+    }); 
+  }, [match, firebase]);
+  
 // *** RENDER ***
   return <> 
     <PagePattern>
       <div className='m-3 text-left'>
         <h1>Information</h1>
         <div className='my-3 pt-2 pl-3' style={{fontSize: 23}}>
-          {userIsError ? (
+          {isError ? (
             <p>Something went wrong...</p>
           ):(
-            userIsLoading ? (
+            isLoading ? (
               <Spinner animation="border"/>
             ):(
               <>
               <label style={{width: 80}}>Name:</label>{user}
               <br></br>
-              <label style={{width: 80}}>Email:</label>{authUser.email}
-              {!authUser.emailVerified && <button onClick={handleEmailVerify}>Email verify</button>}
+              <label style={{width: 80}}>Email:</label>{contactMail}
               </>
             )
           )}
@@ -74,7 +75,7 @@ console.log(writeList);
       </div>
       <br></br>
       <h1 className='text-left mx-3 mb-3'>Statistics</h1>
-      <div className='mx-1 text-left row'>
+      <div className='mx-1 text-left'>
         <WriteList list={writeList}/>
       </div>
     </PagePattern>
@@ -83,6 +84,6 @@ console.log(writeList);
   </>
 }
 
-const Profile = compose(withFirebase, withAuthentication)(ProfileBase);
+const Profile = compose(withFirebase)(ProfileBase);
 
 export default Profile;

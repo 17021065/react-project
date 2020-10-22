@@ -2,7 +2,7 @@ import React from 'react'
 import { Card } from 'react-bootstrap';
 
 const WriteList = ({list}) => {
-  return <div className='col-6 p-3 border-right'>
+  return <div className='p-3'>
     <p style={{fontSize: 25}}>Articles written: <strong>{list.length}</strong></p>
     {list.map((item)=>
       <Card className='bg-light' key={item.aid}>
