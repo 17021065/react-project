@@ -1,21 +1,22 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navbar,Nav, NavDropdown} from 'react-bootstrap';
-import article from '../img/article-24px.svg';
+import newspaper from '../img/newspaper.svg';
 import SignoutButton from '../sign/Signout';
 import VerifyButton from '../sign/Verify';
 
 const Navigation = ({username, isVerified}) => {
   return <>
-    <Navbar bg="light" expand="lg">
-        <Navbar.Brand href="/"><img src={article} alt='Library Icon'></img>Library</Navbar.Brand>
+    <Navbar bg="dark" variant='dark' expand="lg">
+        <Navbar.Brand href="/"><img src={newspaper} alt='Library Icon'></img>&nbsp;Library</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             {/* <Nav.Link href="/search">Search</Nav.Link>
             <Nav.Link href="/write">Write</Nav.Link>
             <Nav.Link href="/experiment">Experiment</Nav.Link> */}
-          </Nav>         
+          </Nav>
+          <Nav>      
             {username ? 
               (
                 <>
@@ -29,6 +30,7 @@ const Navigation = ({username, isVerified}) => {
                 <Navbar.Text><a className='mx-2 text-primary' href='/signin'>Sign in</a></Navbar.Text>
               )
             }
+          </Nav>   
         </Navbar.Collapse>
     </Navbar>
   </>

@@ -41,11 +41,11 @@ const Main = ({firebase, authUser}) => {
 
     <Navigation username={username} isVerified={isVerified}/>
 
-    <div className='row bg-light'>
-      <div className='col-2 bg-dark pt-3'>
-        <Sidebar/>
+    <div className='row' style={{minHeight:1000}}>
+      <div className='col-2 pt-3' style={{background: '#f7f7f7'}}>
+        <Sidebar elementStyle={'text-secondary text-left my-sm-1 ml-sm-2'}/>
       </div>
-      <div className='col-10'>
+      <div className='col-10 bg-white'>
       <Route path="/" exact component={Banner}/>
       <Route path="/search/:subject" component={Searcher}/>
       <Route path="/search" exact component={SearchBanner}/>
