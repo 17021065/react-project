@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form,FormControl,Button,Spinner, Pagination, } from 'react-bootstrap';
 import search from '../img/search-24px.svg';
 import List from './List';
-import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
 import { compose } from 'recompose';
 import { withFirebase } from '../controller/firebase';
@@ -14,11 +13,11 @@ const solveData = (database, subject) => {
     item.subject.toLocaleLowerCase().includes(subject.toLocaleLowerCase())
   );
   let processed = [];
-  for(let n=0; n<raw.length; n+=5){
-    if(n+5>raw.length){
+  for(let n=0; n<raw.length; n+=10){
+    if(n+10>raw.length){
       processed.push(raw.slice(n, raw.length));
     }else{
-      processed.push(raw.slice(n, n+5));
+      processed.push(raw.slice(n, n+10));
     }
   }
   return [raw, processed];
@@ -89,12 +88,12 @@ const SearcherBase = ({match, firebase}) => {
       <div className='mx-auto' style={{width: 400}}>
         <Form inline onSubmit={handleSearchSubmit}>
           <FormControl value={searchTerm} placeholder="Search" className="mr-sm-2 mx-4 w-75" onChange={handleSearchInput}/>
-          <Button type="submit" variant="outline-secondary" disabled={!searchTerm}>
+          <Button type="submit" variant="outline-success" disabled={!searchTerm}>
             <img src={search} alt='searchIcon'></img>
           </Button>
         </Form>  
       </div>
-      <div className='mx-auto w-75 my-4'>
+      <div className='mx-auto ml-sm-4 my-sm-4'>
         {isError ? (
           <p>Something went wrong ...</p>
         ):(
@@ -111,8 +110,6 @@ const SearcherBase = ({match, firebase}) => {
         )}   
       </div>
     </PagePattern>
-
-    <Footer/>
   </>
 }
 

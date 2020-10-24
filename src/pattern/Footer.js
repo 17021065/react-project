@@ -7,7 +7,7 @@ import firebaseLogo from '../img/logo-built_white.png';
 
 const Footer = () => {
     return <div>
-    <footer className='footer pt-sm-2 mr-sm-3 bg-white border-top'>
+    <footer className='footer pt-sm-2 mr-sm-3 mt-sm-4 bg-white border-top'>
       <div className='container-fluid row pt-sm-3'>
         <div className='col-sm-4 text-sm-left'>
           <p><strong>Contract me:</strong></p>

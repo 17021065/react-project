@@ -8,7 +8,9 @@ import VerifyButton from '../sign/Verify';
 const Navigation = ({username, isVerified}) => {
   return <>
     <Navbar bg="dark" variant='dark' expand="lg">
-        <Navbar.Brand href="/"><img src={newspaper} alt='Library Icon'></img>&nbsp;Library</Navbar.Brand>
+        <Navbar.Brand href="/">
+          <img src={newspaper} style={{width:25, height:25}} alt='Library Icon'></img>&nbsp;Library
+        </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">

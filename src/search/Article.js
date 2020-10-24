@@ -1,7 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Tabs, Tab, Spinner,} from 'react-bootstrap';
-import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
 import HistoryTable from './HistoryTable';
 import $ from 'jquery';
@@ -20,7 +19,7 @@ const ArticleBase = ({match, firebase}) => {
   const [hisList, setHisList] = React.useState([]);
 
 // *** HANDLER ***
-  const handleEditRequest = () => window.location.replace(`/write/${match.params.id}`);
+  const handleEditRequest = () => window.location.replace(`/edit/${match.params.id}`);
 
   React.useEffect(() => {
     setIsLoading(true);
@@ -41,15 +40,18 @@ const ArticleBase = ({match, firebase}) => {
   }, [match, firebase, article]);
 
   React.useEffect(() => {
-    firebase.histories().once('value', snapshot => {
+    firebase.histories(match.params.id).once('value', snapshot => {
       const historiesObject = snapshot.val();
-      const historiesList = Object.keys(historiesObject).map(key => ({
-        ...historiesObject[key],
-        hid: key,
-      }));
-      const _hisList = historiesList.filter(item => item.article_id === match.params.id);
-      setHisList(_hisList);
-    })
+      if(historiesObject === null){
+        setHisList(null);
+      }else{
+        const historiesList = Object.keys(historiesObject).map(key => ({
+          ...historiesObject[key],
+          hid: key,
+        }));
+        setHisList(historiesList);
+      }
+    });
   }, [match, firebase]);
 
 // *** RENDER ***
@@ -66,7 +68,9 @@ const ArticleBase = ({match, firebase}) => {
             ):(
               <>
                 <div className='row'>
-                  <div className='col-6'><h1 className='display-4' id='subject'>@subject</h1></div>
+                  <div className='col-6'>
+                    <p id='subject' style={{fontSize: 50}}></p>
+                  </div>
                   <div className='col-6 text-right pt-4'>
                     <button className='btn btn-primary' onClick={handleEditRequest}>Edit Article</button> 
                   </div>
@@ -74,6 +78,9 @@ const ArticleBase = ({match, firebase}) => {
                 <hr></hr>
                 <br></br>
                 <p id='content'/>
+                <div className='text-right'>
+                  Written by <a href={`/profile/${article.author_id}`}>{article.author}</a> at {article.date}
+                </div>
               </>
             )
           )} 
@@ -81,13 +88,16 @@ const ArticleBase = ({match, firebase}) => {
         </Tab>
         <Tab eventKey="history" title="Edit History">
           <div className='m-4'>
-            <HistoryTable hisList={hisList} />
+            {!hisList ? (
+                <p>There is no editing on this post.</p>
+              ):(
+                <HistoryTable hisList={hisList} />
+              )
+            }
           </div>
         </Tab>
       </Tabs>
     </PagePattern>
-
-    <Footer/>
   </>
 }
 

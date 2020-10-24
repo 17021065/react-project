@@ -4,45 +4,53 @@ import CKEditor from '@ckeditor/ckeditor5-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { compose } from 'recompose';
 import { Tabs, Tab, Modal, Button, Alert } from 'react-bootstrap';
-import useSemiPersistentState from '../controller/state/State'
 import PagePattern from '../pattern/PagePattern';
 import $ from 'jquery';
 import { withAuthentication} from '../controller/session';
 import { withFirebase } from '../controller/firebase';
 
-const WriteFormBase = ({authUser, firebase}) => {
+const EditFormBase = ({match, authUser, firebase}) => {
 // *** STATE ***
-  const [subject, setSubject] = useSemiPersistentState('subject', '');
+  const [subject, setSubject] = React.useState('');
 
-  const [content, setContent] = useSemiPersistentState('content', '');
+  const [content, setContent] = React.useState('');
 
-  const [author, setAuthor] = React.useState();
+  const [editor, setEditor] = React.useState();
 
-  const [authorId, setAuthorId] = React.useState();
+  const [editorId, setEditorId] = React.useState();
 
   const [showCancelPrompt, setShowCancelPrompt] = React.useState(false);
 
   const [showRequireSigninPrompt, setShowRequireSigninPrompt] = React.useState(false);
+
+  const [article, setArticle] = React.useState();
 
 // *** HANDLER ***
   React.useEffect(() => {
     !!authUser && firebase.user(authUser.uid).once('value', snapshot => {
       const currentUser = snapshot.val();
       if(!!currentUser) {
-        setAuthor(currentUser.username);
-        setAuthorId(authUser.uid);
+        setEditor(currentUser.username);
+        setEditorId(authUser.uid);
       } 
     });
   }, [authUser, firebase]);
 
-  React.useEffect(() => { 
+  React.useEffect(() => {
+    firebase.article(match.params.id).once('value', snapshot => {
+      const _article = snapshot.val();
+      setArticle(_article);
+      setSubject(_article.subject);
+      setContent(_article.content);
+    });
+  }, [match, setSubject, setContent, firebase]);
+
+  React.useEffect(() => {
     $('#subject').html(subject);
     $('#content').html(content);
   }, [subject, content]);
   
   const handleInitCkeditor = (editor) => editor.setData(content);
-
-  const handleSubjectChange = (event) => setSubject(event.target.value);
 
   const handleContentChange = (event, editor) => setContent(editor.getData());
   
@@ -53,26 +61,31 @@ const WriteFormBase = ({authUser, firebase}) => {
   const handleCloseRequireSigninPrompt = () => setShowRequireSigninPrompt(false);
 
   const handleCancel = (event) => {
-    setSubject('');
-    setContent('');
-    window.location.replace('/write');
+    window.location.replace(`/article/${match.params.id}`);
   }
 
   const handleSubmit = (event) => {
     if(!authUser){
       setShowRequireSigninPrompt(true);
     }else{
-      firebase.articles().push({
-        subject: subject,
+      firebase.article(match.params.id).set({
+        ...article,
         content: content,
-        author: author,
-        author_id: authorId,
-        date: new Date().toString(),
-        view: 0,
+      })
+      .then(() => {
+        firebase.histories(match.params.id).push({
+          editor: editor,
+          editor_id: editorId,
+          date: new Date().toString(),
+        });
+      })
+      .then(() => {
+        window.location.replace(`/article/${match.params.id}`);
+      })
+      .catch(err => {
+        console.log(err);
+        event.stopPropagation();
       });
-      setSubject('');
-      setContent('');
-      window.location.replace('/write');
     }
     event.preventDefault();
   } 
@@ -82,13 +95,10 @@ const WriteFormBase = ({authUser, firebase}) => {
     <PagePattern>
       <Tabs defaultActiveKey="writing" transition={false} id="noanim-tab-example">
         <Tab eventKey="writing" title="Writing Page" className='mx-3 mt-2'>
-          {!authUser && <Alert variant='warning'>You have to sign in to submit article!</Alert>}
-          <h1>Write new article</h1>
+          {!authUser && <Alert variant='warning'>You have to sign in to submit change!</Alert>}
+            <p style={{fontSize: 50}} className='text-left'>{subject}</p>
+            <hr></hr>
             <form className='was-validated' onSubmit={handleSubmit}>
-              <div className="form-group">
-                <input type="text" className="form-control" placeholder="Subject" value={subject} onChange={handleSubjectChange} required></input>
-                <div className='invalid-feedback'>Please fill out this field.</div>
-              </div>
               <div className="form-group">
                 <CKEditor 
                   editor={ClassicEditor} 
@@ -104,8 +114,8 @@ const WriteFormBase = ({authUser, firebase}) => {
             </form>
         </Tab>
         <Tab eventKey="preview" title="Preview Article">
-          <div className='text-left m-5'> 
-            <h1 className='display-4' id='subject'>@subject</h1>
+          <div className='text-left mt-sm-2 ml-sm-3'> 
+            <p id='subject' style={{fontSize: 50}}></p>
             <hr></hr>
             <br></br>
             <p id='content'></p>
@@ -119,7 +129,7 @@ const WriteFormBase = ({authUser, firebase}) => {
         <Modal.Header closeButton>
           <Modal.Title>Alert!</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Everything written will be deleted. Do you still want to continue?</Modal.Body>
+        <Modal.Body>The change will be canceled. Do you still want to continue?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseCancelPrompt}>
             No
@@ -129,6 +139,7 @@ const WriteFormBase = ({authUser, firebase}) => {
           </Button>
         </Modal.Footer>
     </Modal>
+
     <Modal show={showRequireSigninPrompt} animation={false} onHide={handleCloseRequireSigninPrompt}>
         <Modal.Header closeButton>
           <Modal.Title>Prompt</Modal.Title>
@@ -139,10 +150,10 @@ const WriteFormBase = ({authUser, firebase}) => {
             Ok
           </Button>
         </Modal.Footer>
-    </Modal>    
+    </Modal>
   </>
 }
 
-const WriteForm = compose(withFirebase, withAuthentication)(WriteFormBase);
+const EditForm = compose(withFirebase, withAuthentication)(EditFormBase);
 
-export default WriteForm;
+export default EditForm;

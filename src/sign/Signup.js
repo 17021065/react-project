@@ -1,7 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPattern from '../pattern/LoginPattern';
-import Footer from '../pattern/Footer';
 import { Alert } from 'react-bootstrap';
 import { withFirebase } from '../controller/firebase';
 import { compose } from 'recompose';
@@ -55,7 +54,7 @@ const SignupBase = ({firebase}) => {
         .then(() => {
           return firebase.doSendEmailVerification();
         })
-        .then(() => window.location.replace('/'))
+        .then(() => window.location.replace('/signup/success'))
         .catch(err => {
           if(err.code==='auth/email-already-in-use') setEmailIsUsed(true);
           else if(err.code==='auth/weak-password') setPassIsWeak(true);
@@ -69,10 +68,10 @@ const SignupBase = ({firebase}) => {
 // *** RENDER ***
   return <>
   <LoginPattern> 
-    <div className='my-2 pb-3'><h1>Sign up Library</h1></div>
+    <div className='mt-sm-2 pb-sm-3'><h1 style={{fontSize: 50}}>Sign up Library</h1></div>
     {lackOfInfo && <Alert variant='danger'>Please fill out the form!</Alert>}
-    <div className='my-3'>
-      <div className='mx-2 text-left'>
+    <div className='mt-sm-3'>
+      <div className='mx-sm-2 text-left'>
         <form onSubmit={handleFormSubmit}>
           <div className='form-group'>
             <label htmlFor="email">Email address:</label>
@@ -93,12 +92,15 @@ const SignupBase = ({firebase}) => {
             <input type="password" className="form-control" id="repwd" placeholder="Enter password again" onChange={handleConfirmPasswordChange}></input>
             {passIsNotMatch && <p className='text-danger'>Wrong confirm password!</p>}
           </div>
-          <button type="submit" className="btn btn-primary">Create</button>
+          <button type="submit" className="btn btn-primary mt-sm-2">Create</button>
         </form>
+        <br></br>
+        <div className='text-left ml-sm-2 mt-sm-4'>
+        <a href='/signin'>{'<< back to sign in page'}</a>
+        </div>
       </div>
     </div>
   </LoginPattern>
-  <Footer/>
   </>    
 } 
 

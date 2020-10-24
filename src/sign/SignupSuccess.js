@@ -1,25 +1,24 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Jumbotron, Container, Spinner } from 'react-bootstrap';
-import { Redirect } from 'react-router-dom';
+import PagePattern from '../pattern/PagePattern';
 
 const SignupSuccess = () => {
-    const [redirect, setRedirect] = React.useState(false);
+  setTimeout(() => {
+    window.location.replace('/');
+  }, 2000);
 
-    setTimeout(() => {
-        setRedirect(true);
-    }, 2000);
-
-    return <>
-        <Jumbotron fluid style={{height: 845}}>
-        <Container className='my-auto' style={{height: 700}}>
-            <h1 style={{height:350, fontSize:80, paddingTop:250}}>Signed up successfully!</h1>
-            <p style={{fontSize:30}}>You will be redirect to login page after seconds.</p>
-            <Spinner animation="border" />
+  return <>
+    <PagePattern>
+      <Jumbotron fluid style={{height: 845}} className='bg-white'>
+        <Container style={{height: 700}}>
+          <h1 style={{height:350, fontSize:80, paddingTop:250}}>Signed up successfully!</h1>
+          <p style={{fontSize:30}}>You will be redirect to login page after seconds.</p>
+          <Spinner animation="border" />
         </Container>
-        </Jumbotron>
-        {redirect && <Redirect to='/'></Redirect>}
-    </>
+      </Jumbotron>
+    </PagePattern>
+  </>
 }
 
 export default SignupSuccess;

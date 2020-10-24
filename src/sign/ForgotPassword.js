@@ -1,7 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import LoginPattern from '../pattern/LoginPattern';
-import Footer from '../pattern/Footer';
 import { withFirebase } from '../controller/firebase';
 
 const ForgotPasswordBase = ({firebase}) => {
@@ -18,9 +17,9 @@ const ForgotPasswordBase = ({firebase}) => {
 
   return <>
   <LoginPattern>
-    <div className='my-2 pb-3'><h1>Reset password</h1></div>
-    <div className='my-3'>
-      <div className='mx-2 text-left'>
+    <div className='my-sm-2 pb-sm-3'><h1 style={{fontSize: 50}}>Reset password</h1></div>
+    <div className='my-sm-3'>
+      <div className='mx-sm-2 text-left'>
         <form className="was-validated" onSubmit={handleResetPasswordSubmit}>
           <div className="form-group">
             <label htmlFor="uname">Email:</label>
@@ -31,16 +30,15 @@ const ForgotPasswordBase = ({firebase}) => {
           <button type="submit" className="btn btn-primary">Send</button>
         </form>
       </div>
-      <div className='text-left mx-2 mt-4'>
+      <br></br>
+      <div className='text-left ml-sm-2'>
         <p>A password reset mail will be sent to your email.</p>
       </div>
-      <div className='text-left mx-2 mt-4'>
+      <div className='text-left ml-sm-2 mt-sm-4'>
         <a href='/signin'>{'<< back to sign in page'}</a>
       </div>
     </div>
   </LoginPattern>
-
-  <Footer/>
   </>
 }
 

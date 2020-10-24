@@ -1,7 +1,6 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Spinner } from 'react-bootstrap';
-import Footer from '../pattern/Footer';
 import PagePattern from '../pattern/PagePattern';
 import { withFirebase } from '../controller/firebase';
 import { compose } from 'recompose';
@@ -55,9 +54,9 @@ const ProfileBase = ({match, firebase}) => {
 // *** RENDER ***
   return <> 
     <PagePattern>
-      <div className='m-3 text-left'>
-        <h1>Information</h1>
-        <div className='my-3 pt-2 pl-3' style={{fontSize: 23}}>
+      <div className='m-sm-2 text-left'>
+        <h1 style={{fontSize: 50}}>User profile</h1>
+        <div className='mt-sm-4' style={{fontSize: 25}}>
           {isError ? (
             <p>Something went wrong...</p>
           ):(
@@ -74,13 +73,10 @@ const ProfileBase = ({match, firebase}) => {
         </div>
       </div>
       <br></br>
-      <h1 className='text-left mx-3 mb-3'>Statistics</h1>
-      <div className='mx-1 text-left'>
+      <div className='text-left'>
         <WriteList list={writeList}/>
       </div>
     </PagePattern>
-
-    <Footer/>
   </>
 }
 

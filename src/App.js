@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter as Router, Route} from "react-router-dom";
 import { compose } from 'recompose';
 import WriteForm from './write/Write';
+import EditForm from './write/Edit';
 import Searcher from './search/Search';
 import Banner from './pattern/Banner';
 import Article from './search/Article';
@@ -49,7 +50,7 @@ const Main = ({firebase, authUser}) => {
       <Route path="/" exact component={Banner}/>
       <Route path="/search/:subject" component={Searcher}/>
       <Route path="/search" exact component={SearchBanner}/>
-      <Route path="/write/:id" component={WriteForm}></Route>
+      <Route path="/edit/:id" component={EditForm}/>
       <Route path="/write" exact component={WriteForm}/>
       <Route path="/article/:id" component={Article}/>
       <Route path="/signin" component={Signin}/>

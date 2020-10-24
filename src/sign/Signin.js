@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Alert } from 'react-bootstrap';
 import { compose } from 'recompose';
 import LoginPattern from '../pattern/LoginPattern';
-import Footer from '../pattern/Footer';
 import { withFirebase } from '../controller/firebase';
 
 const SigninBase = ({firebase}) => {
@@ -37,11 +36,11 @@ const SigninBase = ({firebase}) => {
 // *** RENDER ***
   return <>
   <LoginPattern> 
-    <div className='my-2 pb-3'><h1>Sign in Library</h1></div>
+    <div className='my-sm-2 pb-sm-3'><h1 style={{fontSize: 50}}>Sign in Library</h1></div>
     {isNotExisted && <Alert variant='danger'>Account is not existed!</Alert>}
     {passIsWrong && <Alert variant='danger'>Wrong password!</Alert>}
-    <div className='my-3'>
-      <div className='mx-2 text-left'>
+    <div className='my-sm-3'>
+      <div className='mx-sm-2 text-left'>
         <form className="was-validated" onSubmit={handleLogInSubmit}>
           <div className="form-group">
             <label htmlFor="email">Email:</label>
@@ -58,12 +57,13 @@ const SigninBase = ({firebase}) => {
           <button type="submit" className="btn btn-primary">Submit</button>
         </form>
       </div>
-      <div className='text-left mx-2 mt-4'>
+      <br></br>
+      <div className='text-left mx-sm-2 mt-sm-4'>
         <p>
           Forgot your password ? <a href='/forgot-password'>click here</a>.
         </p>
       </div>
-      <div className='text-left mx-2 mt-4'>
+      <div className='text-left mx-sm-2 mt-sm-4'>
         <p>
           Sign in is required for writing article.<br></br>
           If you do not have available account, sign up <a href='/signup'>here</a>.
@@ -71,7 +71,6 @@ const SigninBase = ({firebase}) => {
       </div>
     </div>
   </LoginPattern>
-  <Footer/>
   </>    
 } 
 

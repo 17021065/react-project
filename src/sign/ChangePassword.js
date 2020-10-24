@@ -1,23 +1,18 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Alert } from 'react-bootstrap';
-import { Redirect } from "react-router-dom";
 import LoginPattern from '../pattern/LoginPattern';
-import Footer from '../pattern/Footer';
 import { withFirebase } from '../controller/firebase';
 
 const ChangePasswordBase = ({firebase}) => {
-// Start declare state  
+// *** STATE *** 
   const [password, setPassword] = React.useState('');
 
   const [confirmPassword, setConfirmPassword] = React.useState('');
 
   const [notMatch, setNotMatch] = React.useState(false);
 
-  const [redirect, setRedirect] = React.useState(false);
-// End declare state
-
-// Start handle state
+// *** HANDLER ***
   const handleNewPasswordChange = (event) => setPassword(event.target.value);
 
   const handleConfirmPasswordChange = (event) => setConfirmPassword(event.target.value);
@@ -29,19 +24,23 @@ const ChangePasswordBase = ({firebase}) => {
     }else{
       firebase.doPasswordUpdate(password)
       .then(() => firebase.doSignOut())
-      .then(() => setRedirect(true))
+      .then(() => window.location.replace('/signin'))
       .catch(err => console.log(err));
     } 
     event.preventDefault();
   }
-// End handle state
 
+  const handleCancel = event => {
+    window.location.replace('/');
+  }
+
+// *** RENDER ***
   return <>
   <LoginPattern>
-    <div className='my-2 pb-3'><h1>Change password</h1></div>
-    {notMatch && <Alert variant='danger'>Confirm password is not match !</Alert>}
-    <div className='my-3'>
-      <div className='mx-2 text-left'>
+    <div className='mt-sm-2 pb-sm-3'><h1 style={{fontSize: 50}}>Change password</h1></div>
+    {notMatch && <Alert variant='danger'>Confirm password is not match!</Alert>}
+    <div className='mt-sm-3'>
+      <div className='mx-sm-2 text-left'>
         <form className="was-validated" onSubmit={handleChangePasswordSubmit}>
           <div className="form-group">
             <label htmlFor="opwd">New password:</label>
@@ -55,16 +54,16 @@ const ChangePasswordBase = ({firebase}) => {
             <div className="valid-feedback">Valid.</div>
             <div className="invalid-feedback">Please fill out this field.</div>
           </div>
-          <button type="submit" className="btn btn-primary">Confirm</button>
+          <button type="submit" className="btn btn-primary mr-sm-2">Confirm</button>
+          <button type="submit" className="btn btn-danger" onClick={handleCancel}>Cancel</button>
         </form>
       </div>
     </div>
-    <div className='text-left mx-2 mt-4'>
-      <p><strong>You will sign out and move to sign in page after change password.</strong></p>
+    <br></br>
+    <div className='text-left mx-sm-2 mt-sm-4'>
+      <Alert variant='warning'>Warning: You will sign out and move to sign in page after change password.</Alert>
     </div>
   </LoginPattern>
-  {redirect && <Redirect to='/signin'></Redirect>}
-  <Footer/>
   </>
 }
 
