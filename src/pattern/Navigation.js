@@ -29,7 +29,7 @@ const Navigation = ({username, isVerified}) => {
                 </NavDropdown>   
                 </> 
               ):(
-                <Navbar.Text><a className='mx-2 text-primary' href='/signin'>Sign in</a></Navbar.Text>
+                <Nav.Link href="/signin">Sign in</Nav.Link> 
               )
             }
           </Nav>   

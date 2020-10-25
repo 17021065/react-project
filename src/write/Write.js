@@ -104,8 +104,8 @@ const WriteFormBase = ({authUser, firebase}) => {
             </form>
         </Tab>
         <Tab eventKey="preview" title="Preview Article">
-          <div className='text-left m-5'> 
-            <h1 className='display-4' id='subject'>@subject</h1>
+          <div className='text-left mt-sm-2 ml-sm-3'> 
+            <p id='subject' style={{fontSize: 50}}></p>
             <hr></hr>
             <br></br>
             <p id='content'></p>
