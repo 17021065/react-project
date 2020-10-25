@@ -13,7 +13,7 @@ import Signin from './sign/Signin';
 import Signup from './sign/Signup';
 import SignupSuccess from './sign/SignupSuccess';
 import Profile from './info/Profile';
-import Experiment from './info/Experiment';
+import ChangeUsername from './sign/ChangeUsername';
 import Navigation from './pattern/Navigation';
 import Sidebar from './pattern/Sidebar';
 import ForgotPassword from './sign/ForgotPassword';
@@ -59,7 +59,7 @@ const Main = ({firebase, authUser}) => {
       <Route path="/forgot-password" component={ForgotPassword}/>
       <Route path="/change-password" component={ChangePassword}/>
       <Route path="/profile/:id" component={Profile}/>
-      <Route path="/experiment" component={Experiment}/>
+      <Route path="/change-username" component={ChangeUsername}/>
       </div>
     </div>
     

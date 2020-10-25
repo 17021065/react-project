@@ -1,23 +1,34 @@
 import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Alert } from 'react-bootstrap';
 import LoginPattern from '../pattern/LoginPattern';
 import { withFirebase } from '../controller/firebase';
 
 const ForgotPasswordBase = ({firebase}) => {
   const [email, setEmail] = React.useState('');
 
+  const [userNotFound, setUserNotFound] = React.useState(false);
+
   const handleEmailChange = (event) => setEmail(event.target.value);
 
   const handleResetPasswordSubmit = (event) => {
+    setUserNotFound(false);
     firebase.doPasswordReset(email)
     .then(() => setEmail(''))
-    .catch(err => console.log(err));
+    .catch(err => {
+      if(err.code==='auth/user-not-found'){
+        setUserNotFound(true);
+      }else{
+        console.log(err);
+      }
+    });
     event.preventDefault();
   }
 
   return <>
   <LoginPattern>
     <div className='my-sm-2 pb-sm-3'><h1 style={{fontSize: 50}}>Reset password</h1></div>
+    {userNotFound && <Alert variant='danger'>There is no user record corresponding to this identifier.</Alert>}
     <div className='my-sm-3'>
       <div className='mx-sm-2 text-left'>
         <form className="was-validated" onSubmit={handleResetPasswordSubmit}>

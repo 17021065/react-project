@@ -93,6 +93,10 @@ const WriteFormBase = ({authUser, firebase}) => {
                 <CKEditor 
                   editor={ClassicEditor} 
                   data={content}
+                  config={{ckfinder: {
+                      // Upload the images to the server using the CKFinder QuickUpload command.
+                      uploadUrl: 'https://example.com/ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Images&responseType=json'
+                  }}}
                   onChange={handleContentChange}
                   onInit={handleInitCkeditor}
                 />

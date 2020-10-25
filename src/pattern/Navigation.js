@@ -24,6 +24,7 @@ const Navigation = ({username, isVerified}) => {
                 <>
                 <NavDropdown title={`Signed in as: ${username}`} id="basic-nav-dropdown" alignRight={true}>
                   {!isVerified && <VerifyButton/>}
+                  <NavDropdown.Item href='/change-username'>Change Username</NavDropdown.Item>
                   <NavDropdown.Item href='/change-password'>Change Password</NavDropdown.Item>
                   <SignoutButton/>
                 </NavDropdown>   

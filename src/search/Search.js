@@ -7,11 +7,14 @@ import PagePattern from '../pattern/PagePattern';
 import { compose } from 'recompose';
 import { withFirebase } from '../controller/firebase';
 
-
 const solveData = (database, subject) => {
   let raw = database.filter((item) =>
     item.subject.toLocaleLowerCase().includes(subject.toLocaleLowerCase())
-  );
+  ).sort((a, b) => {
+    let ia = a.subject.toLocaleLowerCase().indexOf(subject.toLocaleLowerCase());
+    let ib = b.subject.toLocaleLowerCase().indexOf(subject.toLocaleLowerCase());
+    return ia-ib;
+  });
   let processed = [];
   for(let n=0; n<raw.length; n+=10){
     if(n+10>raw.length){
