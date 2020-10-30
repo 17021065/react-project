@@ -49,7 +49,7 @@ const ArticleBase = ({match, firebase}) => {
           ...historiesObject[key],
           hid: key,
         }));
-        setHisList(historiesList);
+        setHisList(historiesList.reverse());
       }
     });
   }, [match, firebase]);
